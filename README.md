@@ -11,8 +11,14 @@ A user can read / write / update / delete documents and orders.
 
 ```
 ./mvnw clean package
- java -jar target/orders-0.0.1.jar
+./mvnw spring-boot:run
  ```
+
+### Run with test profile
+```
+./mvnw spring-boot:run -Dspring-boot.run.profiles=test
+```
+ 
  
  ### Or with docker
  ```
