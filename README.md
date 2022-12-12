@@ -16,7 +16,8 @@ A user can read / write / update / delete documents and orders.
  
  ### Or with docker
  ```
- docker-compose up
+ docker-compose up --build
+
  ```
  
  # Database
