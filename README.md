@@ -2,7 +2,7 @@
 
 Just a demo project.
 A microservice for the orders of my demo spring application.
-A user can read / write / update / delete documents and orders.
+A user can read / write / update / delete products and orders.
 
  # Java
  It requires Java version 17
