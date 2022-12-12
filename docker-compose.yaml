@@ -18,7 +18,7 @@ services:
 
   orders-database:
     image: "postgres:14.5-alpine"
-    container_name: orders_database
+    container_name: orders-database
     restart: "unless-stopped"
     volumes:
       - "db-data:/val/lib/postgres/data"
