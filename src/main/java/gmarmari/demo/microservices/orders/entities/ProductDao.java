@@ -1,10 +1,9 @@
 package gmarmari.demo.microservices.orders.entities;
 
-
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
+import gmarmari.demo.microservices.orders.entities.converters.PrizeConverter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
@@ -15,19 +14,15 @@ public class ProductDao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NonNull
-    private String name = "";
-    @NonNull
-    private String brand = "";
-    @Nullable
-    private String description;
-    @Nullable
-    private String color;
-    private int lengthMm;
-    private int widthMm;
-    private int heightMm;
-    private int weightGrams;
-    private double prizeEuro;
+    @NotNull
+    private String name;
+
+    private int amount;
+
+    @NotNull
+    @Convert(converter = PrizeConverter.class)
+    @Column(name="prize")
+    private PrizeDao prize;
 
     public long getId() {
         return id;
@@ -37,80 +32,28 @@ public class ProductDao {
         this.id = id;
     }
 
-    @NonNull
     public String getName() {
         return name;
     }
 
-    public void setName(@NonNull String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    @NonNull
-    public String getBrand() {
-        return brand;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setBrand(@NonNull String brand) {
-        this.brand = brand;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
-    @Nullable
-    public String getDescription() {
-        return description;
+    public PrizeDao getPrize() {
+        return prize;
     }
 
-    public void setDescription(@Nullable String description) {
-        this.description = description;
-    }
-
-    @Nullable
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(@Nullable String color) {
-        this.color = color;
-    }
-
-    public int getLengthMm() {
-        return lengthMm;
-    }
-
-    public void setLengthMm(int lengthMm) {
-        this.lengthMm = lengthMm;
-    }
-
-    public int getWidthMm() {
-        return widthMm;
-    }
-
-    public void setWidthMm(int widthMm) {
-        this.widthMm = widthMm;
-    }
-
-    public int getHeightMm() {
-        return heightMm;
-    }
-
-    public void setHeightMm(int heightMm) {
-        this.heightMm = heightMm;
-    }
-
-    public int getWeightGrams() {
-        return weightGrams;
-    }
-
-    public void setWeightGrams(int weightGrams) {
-        this.weightGrams = weightGrams;
-    }
-
-    public double getPrizeEuro() {
-        return prizeEuro;
-    }
-
-    public void setPrizeEuro(double prizeEuro) {
-        this.prizeEuro = prizeEuro;
+    public void setPrize(PrizeDao prize) {
+        this.prize = prize;
     }
 
     @Override
@@ -118,12 +61,12 @@ public class ProductDao {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductDao that = (ProductDao) o;
-        return id == that.id && lengthMm == that.lengthMm && widthMm == that.widthMm && heightMm == that.heightMm && weightGrams == that.weightGrams && Double.compare(that.prizeEuro, prizeEuro) == 0 && name.equals(that.name) && brand.equals(that.brand) && Objects.equals(description, that.description) && Objects.equals(color, that.color);
+        return id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, brand, description, color, lengthMm, widthMm, heightMm, weightGrams, prizeEuro);
+        return Objects.hash(id);
     }
 
     @Override
@@ -131,14 +74,8 @@ public class ProductDao {
         return "ProductDao{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", brand='" + brand + '\'' +
-                ", description='" + description + '\'' +
-                ", color='" + color + '\'' +
-                ", lengthMm=" + lengthMm +
-                ", widthMm=" + widthMm +
-                ", heightMm=" + heightMm +
-                ", weightGrams=" + weightGrams +
-                ", prizeEuro=" + prizeEuro +
+                ", amount=" + amount +
+                ", prize=" + prize +
                 '}';
     }
 }

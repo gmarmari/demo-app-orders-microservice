@@ -1,8 +1,7 @@
 package gmarmari.demo.microservices.orders.adapters;
 
-import gmarmari.demo.microservices.orders.api.ProductDto;
-import gmarmari.demo.microservices.orders.api.Result;
-import gmarmari.demo.microservices.orders.entities.ProductDao;
+import gmarmari.demo.microservices.orders.api.*;
+import gmarmari.demo.microservices.orders.entities.*;
 import gmarmari.demo.microservices.orders.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,66 +20,151 @@ public class ProductAdapter {
         this.service = service;
     }
 
-    public Result save(ProductDto productDto) {
-        try {
-            service.save(convert(productDto));
-            return Result.OK;
-        } catch (Exception e) {
-            return Result.ERROR;
-        }
-    }
-
-    public Result delete(long productId) {
-        try {
-            service.delete(productId);
-            return Result.OK;
-        } catch (Exception e) {
-            return Result.ERROR;
-        }
-    }
-
-    public Optional<ProductDto> getProduct(long productId) {
-        return service.getProduct(productId).map(ProductAdapter::convert);
-    }
 
     public List<ProductDto> getProducts() {
         return service.getProducts().stream()
-                .map(ProductAdapter::convert)
+                .map(this::convert)
                 .collect(Collectors.toList());
     }
 
-    private static ProductDao convert(ProductDto dto) {
-        ProductDao dao = new ProductDao();
-        dao.setId(dto.id);
-        dao.setName(dto.name);
-        dao.setBrand(dto.brand);
-        dao.setDescription(dto.description);
-        dao.setColor(dto.color);
-        dao.setHeightMm(dto.heightMm);
-        dao.setWidthMm(dto.widthMm);
-        dao.setLengthMm(dto.lengthMm);
-        dao.setWeightGrams(dto.weightGrams);
-        dao.setPrizeEuro(dto.prizeEuro);
-        return dao;
+    public Optional<ProductDto> getProduct(long productId) {
+        return service.getProduct(productId).map(this::convert);
     }
 
-    private static ProductDto convert(ProductDao dao) {
+    public Optional<ProductDetailsDto> getProductDetails(long productId) {
+        return service.getProductDetails(productId).map(this::convert);
+    }
+
+    public Response delete(long productId) {
+        try {
+            service.delete(productId);
+            return Response.OK;
+        } catch (Exception e) {
+            return Response.ERROR;
+        }
+    }
+
+    public Response save(ProductDetailsDto productDetails) {
+        try {
+            service.save(convert(productDetails));
+            return Response.OK;
+        } catch (Exception e) {
+            return Response.ERROR;
+        }
+    }
+
+
+
+    //region convert methods
+
+    private ProductDto convert(ProductDao dao) {
         return new ProductDto(
                 dao.getId(),
                 dao.getName(),
-                dao.getBrand(),
-                dao.getDescription(),
-                dao.getColor(),
-                dao.getLengthMm(),
-                dao.getWidthMm(),
-                dao.getHeightMm(),
-                dao.getWeightGrams(),
-                dao.getPrizeEuro()
+                dao.getAmount(),
+                convert(dao.getPrize())
+        );
+    }
+
+    private ProductDetailsDto convert(ProductDetailsDao dao) {
+        return new ProductDetailsDto(
+                convert(dao.product),
+                convert(dao.info),
+                convert(dao.contact)
         );
     }
 
 
+    private ProductInfoDto convert(ProductInfoDao dao) {
+        return new ProductInfoDto(
+                dao.getId(),
+                dao.getProductId(),
+                convert(dao.getSize()),
+                dao.getCountryOfOrigin(),
+                dao.getDescription()
+        );
+    }
+
+    private ProductContactDto convert(ProductContactDao dao) {
+        return new ProductContactDto(
+                dao.getId(),
+                dao.getProductId(),
+                dao.getName(),
+                dao.getAddress(),
+                dao.getTel(),
+                dao.getEmail(),
+                dao.getWebsite()
+        );
+    }
+
+    private PrizeDto convert(PrizeDao dao) {
+        return new PrizeDto(
+                dao.amount,
+                PrizeUnitDto.valueOf(dao.unit.name())
+        );
+    }
+
+    private SizeDto convert(SizeDao dao) {
+        return new SizeDto(
+                dao.amount,
+                SizeUnitDto.valueOf(dao.unit.name())
+        );
+    }
+
+    private ProductDao convert(ProductDto dto) {
+        ProductDao dao = new ProductDao();
+        dao.setId(dto.id);
+        dao.setName(dto.name);
+        dao.setAmount(dto.amount);
+        dao.setPrize(convert(dto.prize));
+        return dao;
+    }
+
+    private ProductDetailsDao convert(ProductDetailsDto dto) {
+        return new ProductDetailsDao(
+                convert(dto.product),
+                convert(dto.info),
+                convert(dto.contact)
+        );
+    }
 
 
+    private ProductInfoDao convert(ProductInfoDto dto) {
+        ProductInfoDao dao = new ProductInfoDao();
+        dao.setId(dto.id);
+        dao.setProductId(dto.productId);
+        dao.setSize(convert(dto.size));
+        dao.setCountryOfOrigin(dto.countryOfOrigin);
+        dao.setDescription(dto.description);
+        return dao;
+    }
+
+    private ProductContactDao convert(ProductContactDto dto) {
+        ProductContactDao dao = new ProductContactDao();
+        dao.setId(dto.id);
+        dao.setProductId(dto.productId);
+        dao.setName(dto.name);
+        dao.setAddress(dto.address);
+        dao.setTel(dto.tel);
+        dao.setEmail(dto.email);
+        dao.setWebsite(dto.website);
+        return dao;
+    }
+
+    private PrizeDao convert(PrizeDto dto) {
+        return new PrizeDao(
+                dto.amount,
+                PrizeUnitDao.valueOf(dto.unit.name())
+        );
+    }
+
+    private SizeDao convert(SizeDto dto) {
+        return new SizeDao(
+                dto.amount,
+                SizeUnitDao.valueOf(dto.unit.name())
+        );
+    }
+
+    //endregion convert methods
 
 }
