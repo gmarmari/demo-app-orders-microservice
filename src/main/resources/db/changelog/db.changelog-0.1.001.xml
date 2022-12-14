@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
     <changeSet author="gmarmari" id="changelog-0.1.001">
-        <comment>create initial schema</comment>
+        <comment>create product tables</comment>
 
         <createTable tableName="products">
             <column name="id" type="int" autoIncrement="true">
@@ -14,60 +14,56 @@
             <column name="name" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="brand" type="varchar(100)">
+            <column name="amount" type="int" defaultValueNumeric="0">
                 <constraints nullable="false"/>
             </column>
-            <column name="description" type="varchar(500)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="color" type="varchar(32)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="material" type="varchar(64)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="length_mm" type="int" defaultValueNumeric="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="width_mm" type="int" defaultValueNumeric="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="height_mm" type="int" defaultValueNumeric="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="weight_grams" type="int" defaultValueNumeric="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="prize_euro" type="decimal" defaultValueNumeric="0">
+            <column name="prize" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
 
-        <createTable tableName="orders">
+        <createTable tableName="product_info">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="product_id" type="int">
-                <constraints foreignKeyName="fk_orders_product_id"
+                <constraints foreignKeyName="fk_product_info_product_id"
                              referencedTableName="products" referencedColumnNames="id"
-                             deleteCascade="true" nullable="false"/>
+                             nullable="false" unique="true" />
             </column>
-            <column name="username" type="varchar(64)">
+            <column name="size" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="amount" type="int" defaultValueNumeric="0">
+            <column name="country_of_origin" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="creation_date" type="datetime">
+            <column name="description" type="varchar(1000)">
                 <constraints nullable="true"/>
             </column>
-            <column name="status" type="varchar(64)" defaultValue="UNKNOWN">
+        </createTable>
+
+        <createTable tableName="product_contact">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="product_id" type="int">
+                <constraints foreignKeyName="fk_product_contact_product_id"
+                             referencedTableName="products" referencedColumnNames="id"
+                             nullable="false" unique="true" />
+            </column>
+            <column name="name" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="recipient_name" type="varchar(100)">
+            <column name="address" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tel" type="varchar(32)">
                 <constraints nullable="true"/>
             </column>
-            <column name="recipient_address" type="varchar(100)">
+            <column name="email" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="website" type="varchar(100)">
                 <constraints nullable="true"/>
             </column>
         </createTable>

@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/products")
+@RequestMapping("/productsOld")
 @Tag(name = "Product API", description = "Product management API")
-public interface ProductApi {
+public interface ProductOldApi {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             description = "List all products"
     )
-    List<ProductDto> getProducts();
+    List<ProductOldDto> getProducts();
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
@@ -34,14 +34,14 @@ public interface ProductApi {
                     description = "OK",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ProductDto.class))
+                            schema = @Schema(implementation = ProductOldDto.class))
             ),
             @ApiResponse(
                     responseCode = "404",
                     description = "Product not found")
 
     })
-    ProductDto getProductById(@PathVariable("id") long id);
+    ProductOldDto getProductById(@PathVariable("id") long id);
 
     @DeleteMapping(path = "/{id}")
     @Operation(
@@ -71,6 +71,6 @@ public interface ProductApi {
                     description = "An error occurred by saving the product")
 
     })
-    void saveProduct(@RequestBody ProductDto product);
+    void saveProduct(@RequestBody ProductOldDto product);
 
 }

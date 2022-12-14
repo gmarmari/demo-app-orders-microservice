@@ -1,96 +1,212 @@
 package gmarmari.demo.microservices.orders.services.usecase;
 
+import gmarmari.demo.microservices.orders.entities.ProductContactDao;
 import gmarmari.demo.microservices.orders.entities.ProductDao;
+import gmarmari.demo.microservices.orders.entities.ProductDetailsDao;
+import gmarmari.demo.microservices.orders.entities.ProductInfoDao;
+import gmarmari.demo.microservices.orders.repositories.ProductContactRepository;
+import gmarmari.demo.microservices.orders.repositories.ProductInfoRepository;
 import gmarmari.demo.microservices.orders.repositories.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
 
-import static gmarmari.demo.microservices.orders.TestDataFactory.aProductDao;
+import static gmarmari.demo.microservices.orders.CommonDataFactory.aLong;
+import static gmarmari.demo.microservices.orders.ProductDataFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductUseCaseTest {
 
+
     @Mock
-    private ProductRepository repository;
+    private ProductRepository productRepository;
+    @Mock
+    private ProductInfoRepository productInfoRepository;
+    @Mock
+    private ProductContactRepository productContactRepository;
 
     @InjectMocks
-    private  ProductUseCase useCase;
-
-
-    @Test
-    void save() {
-        // Given
-        ProductDao product = aProductDao();
-
-        // When
-        useCase.save(product);
-
-        // Then
-        verify(repository).save(product);
-        verifyNoMoreInteractions(repository);
-    }
+    private ProductUseCase useCase;
 
     @Test
-    void delete() {
+    void getProducts() {
         // Given
-        long productId = 123;
+        ProductDao productA = aProductDao(true);
+        ProductDao productB = aProductDao(true);
+        ProductDao productC = aProductDao(true);
+
+        when(productRepository.findAll()).thenReturn(List.of(productA, productB, productC));
 
         // When
-        useCase.delete(productId);
+        List<ProductDao> list = useCase.getProducts();
 
         // Then
-        verify(repository).deleteById(productId);
-        verifyNoMoreInteractions(repository);
+        assertThat(list).containsExactly(productA, productB, productC);
+        verifyNoMoreInteractions(productRepository);
+        verifyNoInteractions(productInfoRepository);
+        verifyNoInteractions(productContactRepository);
     }
 
     @Test
     void getProduct() {
         // Given
-        long id = 123;
         ProductDao product = aProductDao();
-        product.setId(id);
 
-        when(repository.findById(id)).thenReturn(Optional.of(product));
+        when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
 
         // When
-        Optional<ProductDao> result = useCase.getProduct(id);
+        Optional<ProductDao> result = useCase.getProduct(product.getId());
 
         // Then
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(product);
-
-        verifyNoMoreInteractions(repository);
+        verifyNoMoreInteractions(productRepository);
+        verifyNoInteractions(productInfoRepository);
+        verifyNoInteractions(productContactRepository);
     }
 
     @Test
-    void getProducts() {
+    void getProductDetails() {
         // Given
-        long id = 123;
-        ProductDao product1 = aProductDao();
-        product1.setId(1);
-        ProductDao product2 = aProductDao();
-        product2.setId(2);
-        ProductDao product3 = aProductDao();
-        product3.setId(2);
+        ProductDao product = aProductDao(true);
+        ProductInfoDao info = aProductInfoDao(true);
+        info.setProductId(product.getId());
 
-        Sort sort = Sort.by(Sort.Order.asc("name").ignoreCase());
-        when(repository.findAll(sort)).thenReturn(List.of(product1, product2, product3));
+        ProductContactDao contact = aProductContactDao(true);
+        contact.setProductId(product.getId());
+
+        when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
+        when(productInfoRepository.findByProductId(product.getId())).thenReturn(Optional.of(info));
+        when(productContactRepository.findByProductId(product.getId())).thenReturn(Optional.of(contact));
 
         // When
-        List<ProductDao> result = useCase.getProducts();
+        Optional<ProductDetailsDao> result = useCase.getProductDetails(product.getId());
 
         // Then
-        assertThat(result).containsExactly(product1, product2, product3);
-        verifyNoMoreInteractions(repository);
+        assertThat(result).isPresent();
+        assertThat(result.get().product).isEqualTo(product);
+        assertThat(result.get().info).isEqualTo(info);
+        assertThat(result.get().contact).isEqualTo(contact);
+
+        verifyNoMoreInteractions(productRepository);
+        verifyNoMoreInteractions(productInfoRepository);
+        verifyNoMoreInteractions(productContactRepository);
     }
+
+    @Test
+    void getProductDetails_noProduct() {
+        // Given
+        long productId = aLong();
+        ProductInfoDao info = aProductInfoDao(true);
+        info.setProductId(productId);
+
+        ProductContactDao contact = aProductContactDao(true);
+        contact.setProductId(productId);
+
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+        when(productInfoRepository.findByProductId(productId)).thenReturn(Optional.of(info));
+        when(productContactRepository.findByProductId(productId)).thenReturn(Optional.of(contact));
+
+        // When
+        Optional<ProductDetailsDao> result = useCase.getProductDetails(productId);
+
+        // Then
+        assertThat(result).isEmpty();
+
+        verifyNoMoreInteractions(productRepository);
+        verifyNoMoreInteractions(productInfoRepository);
+        verifyNoMoreInteractions(productContactRepository);
+    }
+
+    @Test
+    void getProductDetail_noInfo() {
+        // Given
+        ProductDao product = aProductDao(true);
+
+        ProductContactDao contact = aProductContactDao(true);
+        contact.setProductId(product.getId());
+
+        when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
+        when(productInfoRepository.findByProductId(product.getId())).thenReturn(Optional.empty());
+        when(productContactRepository.findByProductId(product.getId())).thenReturn(Optional.of(contact));
+
+        // When
+        Optional<ProductDetailsDao> result = useCase.getProductDetails(product.getId());
+
+        // Then
+        assertThat(result).isEmpty();
+
+        verifyNoMoreInteractions(productRepository);
+        verifyNoMoreInteractions(productInfoRepository);
+        verifyNoMoreInteractions(productContactRepository);
+    }
+
+    @Test
+    void getProductDetails_noContact() {
+        // Given
+        ProductDao product = aProductDao(true);
+        ProductInfoDao info = aProductInfoDao(true);
+        info.setProductId(product.getId());
+
+        when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
+        when(productInfoRepository.findByProductId(product.getId())).thenReturn(Optional.of(info));
+        when(productContactRepository.findByProductId(product.getId())).thenReturn(Optional.empty());
+
+        // When
+        Optional<ProductDetailsDao> result = useCase.getProductDetails(product.getId());
+
+        // Then
+        assertThat(result).isEmpty();
+
+        verifyNoMoreInteractions(productRepository);
+        verifyNoMoreInteractions(productInfoRepository);
+        verifyNoMoreInteractions(productContactRepository);
+    }
+
+    @Test
+    void delete() {
+        // Given
+        long productId = aLong();
+
+        // When
+        useCase.delete(productId);
+
+        // Then
+        verify(productRepository).deleteById(productId);
+        verifyNoMoreInteractions(productRepository);
+
+        verify(productInfoRepository).deleteByProductId(productId);
+        verifyNoMoreInteractions(productInfoRepository);
+
+        verify(productContactRepository).deleteByProductId(productId);
+        verifyNoMoreInteractions(productContactRepository);
+    }
+
+    @Test
+    void save() {
+        // Given
+        ProductDetailsDao productDetails = aProductDetailsDao();
+
+        // When
+        useCase.save(productDetails);
+
+        // Then
+        verify(productRepository).save(productDetails.product);
+        verifyNoMoreInteractions(productRepository);
+
+        verify(productInfoRepository).save(productDetails.info);
+        verifyNoMoreInteractions(productInfoRepository);
+
+        verify(productContactRepository).save(productDetails.contact);
+        verifyNoMoreInteractions(productContactRepository);
+    }
+
 
 }
