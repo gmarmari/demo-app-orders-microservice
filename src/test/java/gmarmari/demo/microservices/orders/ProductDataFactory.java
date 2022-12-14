@@ -5,6 +5,7 @@ import gmarmari.demo.microservices.orders.entities.*;
 
 import static gmarmari.demo.microservices.orders.CommonDataFactory.*;
 
+@SuppressWarnings("unused")
 public class ProductDataFactory {
 
     private ProductDataFactory() {

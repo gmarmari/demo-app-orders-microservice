@@ -2,7 +2,6 @@ package gmarmari.demo.microservices.orders.services;
 
 import gmarmari.demo.microservices.orders.entities.ProductDao;
 import gmarmari.demo.microservices.orders.entities.ProductDetailsDao;
-import gmarmari.demo.microservices.orders.entities.ProductOldDao;
 
 import java.util.List;
 import java.util.Optional;

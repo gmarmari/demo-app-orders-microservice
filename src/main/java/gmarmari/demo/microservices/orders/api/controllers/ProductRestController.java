@@ -1,7 +1,6 @@
 package gmarmari.demo.microservices.orders.api.controllers;
 
 import gmarmari.demo.microservices.orders.adapters.ProductAdapter;
-import gmarmari.demo.microservices.orders.adapters.ProductOldAdapter;
 import gmarmari.demo.microservices.orders.api.ProductDetailsDto;
 import gmarmari.demo.microservices.orders.api.ProductDto;
 import gmarmari.demo.microservices.orders.api.ProductNotFoundException;

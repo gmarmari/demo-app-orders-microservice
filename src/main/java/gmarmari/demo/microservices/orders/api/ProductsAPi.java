@@ -31,7 +31,7 @@ public interface ProductsAPi {
                     description = "OK",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ProductOldDto.class))
+                            schema = @Schema(implementation = ProductDto.class))
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -50,7 +50,7 @@ public interface ProductsAPi {
                     description = "OK",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ProductOldDto.class))
+                            schema = @Schema(implementation = ProductDetailsDto.class))
             ),
             @ApiResponse(
                     responseCode = "404",
