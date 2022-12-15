@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    <changeSet author="gmarmari" id="changelog-0.1.004">
+        <comment>add some demo orders</comment>
+
+        <insert tableName="orders">
+            <column name="name" value="My order on April"/>
+            <column name="username" value="super_user"/>
+            <column name="creation_date" value="2022-12-21 10:00:00"/>
+            <column name="status" value="SUBMITTED"/>
+            <column name="payment_method" value="PAYPAL"/>
+            <column name="prize" value="25.57-EURO"/>
+            <column name="delivery_fee" value="04.50-EURO"/>
+        </insert>
+
+
+        <insert tableName="order_address">
+            <column name="order_id" value="1"/>
+            <column name="type" value="SHIPPING"/>
+            <column name="name" value="Donalt Duck"/>
+            <column name="street" value="Maximilianstr. 10"/>
+            <column name="postal_code" value="80333"/>
+            <column name="city" value="Munich"/>
+            <column name="country" value="Germany"/>
+            <column name="tel" value="0172987654"/>
+        </insert>
+
+        <insert tableName="order_address">
+            <column name="order_id" value="1"/>
+            <column name="type" value="BILLING"/>
+            <column name="name" value="Donalt Duck"/>
+            <column name="street" value="Maximilianstr. 10"/>
+            <column name="postal_code" value="80333"/>
+            <column name="city" value="Munich"/>
+            <column name="country" value="Germany"/>
+            <column name="tel" value="0172987654"/>
+        </insert>
+
+
+        <insert tableName="order_product_mapping">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="1"/>
+        </insert>
+
+        <insert tableName="order_product_mapping">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="2"/>
+        </insert>
+
+        <insert tableName="order_product_mapping">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="3"/>
+        </insert>
+
+
+
+
+    </changeSet>
+</databaseChangeLog>
+
