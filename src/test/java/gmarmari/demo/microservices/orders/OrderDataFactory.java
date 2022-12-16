@@ -3,12 +3,11 @@ package gmarmari.demo.microservices.orders;
 import gmarmari.demo.microservices.orders.api.*;
 import gmarmari.demo.microservices.orders.entities.*;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import static gmarmari.demo.microservices.orders.CommonDataFactory.*;
-import static gmarmari.demo.microservices.orders.ProductDataFactory.*;
+import static gmarmari.demo.microservices.orders.ProductDataFactory.aPrizeDao;
+import static gmarmari.demo.microservices.orders.ProductDataFactory.aPrizeDto;
 
 @SuppressWarnings("unused")
 public class OrderDataFactory {
