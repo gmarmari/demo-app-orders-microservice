@@ -1,5 +1,7 @@
 package gmarmari.demo.microservices.orders;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Random;
 
 public class CommonDataFactory {
@@ -43,6 +45,10 @@ public class CommonDataFactory {
 
     public static String aNullableText() {
         return aBoolean() ? aText() : null;
+    }
+
+    public static ZonedDateTime aDate() {
+        return ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
     }
 
 }

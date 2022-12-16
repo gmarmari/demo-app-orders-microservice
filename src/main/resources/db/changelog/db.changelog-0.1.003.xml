@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    <changeSet author="gmarmari" id="changelog-0.1.001">
+        <comment>create orders tables</comment>
+
+        <createTable tableName="orders">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delivery_date" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_method" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="prize" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delivery_fee" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="order_address">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="order_id" type="int">
+                <constraints foreignKeyName="fk_order_address_order_id"
+                             referencedTableName="orders" referencedColumnNames="id"
+                             nullable="false" unique="false" />
+            </column>
+            <column name="type" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="postal_code" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="country" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tel" type="varchar(32)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="website" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="order_address" indexName="index_order_address_order_id_type" unique="true">
+            <column name="order_id"/>
+            <column name="type"/>
+        </createIndex>
+
+        <createTable tableName="order_product_mapping">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="order_id" type="int">
+                <constraints foreignKeyName="fk_order_product_mapping_order_id"
+                             referencedTableName="orders" referencedColumnNames="id"
+                             nullable="false" unique="false" />
+            </column>
+            <column name="product_id" type="int">
+                <constraints foreignKeyName="fk_order_product_mapping_product_id"
+                             referencedTableName="products" referencedColumnNames="id"
+                             nullable="false" unique="false" />
+            </column>
+        </createTable>
+
+    </changeSet>
+</databaseChangeLog>
+
