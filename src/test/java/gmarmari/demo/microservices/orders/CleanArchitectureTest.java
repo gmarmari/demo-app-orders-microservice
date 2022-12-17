@@ -77,14 +77,6 @@ public class CleanArchitectureTest {
         rule.check(importedClasses);
     }
 
-    @Test
-    public void servicesAreTransactional() {
-        JavaClasses importedClasses = new ClassFileImporter().importPackages(PROJECT_PACKAGES);
 
-        ArchRule rule = ArchRuleDefinition.classes().that()
-                .areAnnotatedWith(Service.class)
-                .should().beAnnotatedWith(Transactional.class);
-        rule.check(importedClasses);
-    }
 
 }
