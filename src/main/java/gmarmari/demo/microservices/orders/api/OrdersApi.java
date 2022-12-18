@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/orders")
+@RequestMapping("/")
 @Tag(name = "Order API", description = "Order management API")
 public interface OrdersApi {
 
@@ -61,7 +61,7 @@ public interface OrdersApi {
 
     @GetMapping(path = "/{orderId}/products", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
-            description = "Get the products of the order with the given order id sorted by name"
+            description = "Get the product ids of the order with the given order id"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -69,14 +69,14 @@ public interface OrdersApi {
                     description = "OK",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ProductDto.class))
+                            schema = @Schema(implementation = Long.class))
             ),
             @ApiResponse(
                     responseCode = "404",
                     description = "Order not found")
 
     })
-    List<ProductDto> getOrderProducts(@PathVariable("orderId") long orderId);
+    List<Long> getOrderProductIds(@PathVariable("orderId") long orderId);
 
     @DeleteMapping(path = "/{orderId}")
     @Operation(
@@ -111,7 +111,7 @@ public interface OrdersApi {
 
     @PostMapping(path = "/{orderId}/products", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
-            description = "Save the products of the order with the given order id"
+            description = "Save the product ids of the order with the given order id"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -122,6 +122,6 @@ public interface OrdersApi {
                     description = "An error occurred by saving the products of the order")
 
     })
-    void saveOrderProducts(@PathVariable("orderId") long orderId, @RequestBody List<ProductDto> products);
+    void saveOrderProducts(@PathVariable("orderId") long orderId, @RequestBody List<Long> productIds);
 
 }

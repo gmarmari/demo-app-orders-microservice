@@ -17,7 +17,6 @@ import java.util.Optional;
 import static gmarmari.demo.microservices.orders.CommonDataFactory.aLong;
 import static gmarmari.demo.microservices.orders.CommonDataFactory.aText;
 import static gmarmari.demo.microservices.orders.OrderDataFactory.*;
-import static gmarmari.demo.microservices.orders.ProductDataFactory.aProductDao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -119,29 +118,28 @@ class OrderUseCaseTest {
     }
 
     @Test
-    void getOrderProducts() {
+    void getOrderProductIds() {
         // Given
         OrderDao order = aOrderDao(true);
-
-        ProductDao productA = aProductDao();
-        ProductDao productB = aProductDao();
+        long productIdA = aLong();
+        long productIdB = aLong();
 
         OrderProductMappingDao mappingA = new OrderProductMappingDao();
-        mappingA.setOrder(order);
-        mappingA.setProduct(productA);
+        mappingA.setOrderId(order.getId());
+        mappingA.setProductId(productIdA);
 
         OrderProductMappingDao mappingB = new OrderProductMappingDao();
-        mappingB.setOrder(order);
-        mappingB.setProduct(productB);
+        mappingB.setOrderId(order.getId());
+        mappingB.setProductId(productIdB);
 
         when(orderProductMappingRepository.findByOrderId(order.getId()))
                 .thenReturn(List.of(mappingA, mappingB));
 
         // When
-        List<ProductDao> list = useCase.getOrderProducts(order.getId());
+        List<Long> list = useCase.getOrderProductIds(order.getId());
 
         // Then
-        assertThat(list).containsExactly(productA, productB);
+        assertThat(list).containsExactly(productIdA, productIdB);
         verifyNoInteractions(orderRepository);
         verifyNoInteractions(orderAddressRepository);
         verifyNoMoreInteractions(orderProductMappingRepository);
@@ -171,20 +169,18 @@ class OrderUseCaseTest {
     @Test
     void saveOrderProducts() {
         // Given
-        OrderDao order = aOrderDao(true);
-        List<ProductDao> products = List.of(aProductDao(true), aProductDao(true), aProductDao(true));
-
-        when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
+        long orderId = aLong();
+        List<Long> productIds = List.of(aLong(), aLong(), aLong());
 
         // When
-        useCase.saveOrderProducts(order.getId(), products);
+        useCase.saveOrderProducts(orderId, productIds);
 
         // Then
-        verify(orderProductMappingRepository).deleteByOrderId(order.getId());
-        products.forEach(product -> {
+        verify(orderProductMappingRepository).deleteByOrderId(orderId);
+        productIds.forEach(productId -> {
             OrderProductMappingDao mapping = new OrderProductMappingDao();
-            mapping.setOrder(order);
-            mapping.setProduct(product);
+            mapping.setOrderId(orderId);
+            mapping.setProductId(productId);
             verify(orderProductMappingRepository, atLeast(1)).save(mapping);
         });
         verifyNoMoreInteractions(orderProductMappingRepository);

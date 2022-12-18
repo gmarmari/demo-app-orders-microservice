@@ -1,7 +1,10 @@
 package gmarmari.demo.microservices.orders.entities;
 
+import io.swagger.v3.oas.annotations.info.License;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -12,13 +15,9 @@ public class OrderProductMappingDao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private OrderDao order;
+    private long orderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    protected ProductDao product;
+    private long productId;
 
     public long getId() {
         return id;
@@ -28,20 +27,20 @@ public class OrderProductMappingDao {
         this.id = id;
     }
 
-    public OrderDao getOrder() {
-        return order;
+    public long getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(OrderDao order) {
-        this.order = order;
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
     }
 
-    public ProductDao getProduct() {
-        return product;
+    public long getProductId() {
+        return productId;
     }
 
-    public void setProduct(ProductDao product) {
-        this.product = product;
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
 
     @Override
@@ -61,8 +60,8 @@ public class OrderProductMappingDao {
     public String toString() {
         return "OrderProductMappingDao{" +
                 "id=" + id +
-                ", order=" + order +
-                ", product=" + product +
+                ", orderId=" + orderId +
+                ", productId=" + productId +
                 '}';
     }
 }

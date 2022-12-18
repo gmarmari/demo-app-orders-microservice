@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.info.License;
         info = @Info(
                 title = "Orders API",
                 version = "V01",
-                description = "Manages  orders and products",
+                description = "Manages  orders",
                 contact = @Contact(
                         name = "Georgios",
                         url = "https://github.com/gmarmari/"
