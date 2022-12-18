@@ -38,8 +38,8 @@ public class OrderRestController implements OrdersApi {
     }
 
     @Override
-    public List<ProductDto> getOrderProducts(long orderId) {
-        return adapter.getOrderProducts(orderId);
+    public List<Long> getOrderProductIds(long orderId) {
+        return adapter.getOrderProductIds(orderId);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class OrderRestController implements OrdersApi {
     }
 
     @Override
-    public void saveOrderProducts(long orderId, List<ProductDto> products) {
-        adapter.saveOrderProducts(orderId,products)
+    public void saveOrderProducts(long orderId, List<Long> productIds) {
+        adapter.saveOrderProducts(orderId, productIds)
                 .throwIfError(() -> new ResponseStatusException(
                         HttpStatus.INTERNAL_SERVER_ERROR,
                         "An error occurred by saving the order products"));

@@ -6,8 +6,6 @@ import gmarmari.demo.microservices.orders.entities.*;
 import java.util.List;
 
 import static gmarmari.demo.microservices.orders.CommonDataFactory.*;
-import static gmarmari.demo.microservices.orders.ProductDataFactory.aPrizeDao;
-import static gmarmari.demo.microservices.orders.ProductDataFactory.aPrizeDto;
 
 @SuppressWarnings("unused")
 public class OrderDataFactory {
@@ -75,6 +73,11 @@ public class OrderDataFactory {
                 aOrderDto(orderId),
                 List.of(aOrderAddressDto(orderId))
         );
+    }
+
+    public static PrizeDto aPrizeDto() {
+        int index = aInt(PrizeUnitDto.values().length);
+        return new PrizeDto(aDouble(), PrizeUnitDto.values()[index]);
     }
 
 
@@ -152,6 +155,11 @@ public class OrderDataFactory {
                 order,
                 List.of(shippingAddress, billingAddress)
         );
+    }
+
+    public static PrizeDao aPrizeDao() {
+        int index = aInt(PrizeUnitDao.values().length);
+        return new PrizeDao(aDouble(), PrizeUnitDao.values()[index]);
     }
 
 

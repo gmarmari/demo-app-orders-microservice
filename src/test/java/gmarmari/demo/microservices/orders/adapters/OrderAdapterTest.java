@@ -5,7 +5,6 @@ import gmarmari.demo.microservices.orders.api.*;
 import gmarmari.demo.microservices.orders.entities.OrderAddressDao;
 import gmarmari.demo.microservices.orders.entities.OrderDao;
 import gmarmari.demo.microservices.orders.entities.OrderDetailsDao;
-import gmarmari.demo.microservices.orders.entities.ProductDao;
 import gmarmari.demo.microservices.orders.services.OrderService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +20,6 @@ import java.util.Optional;
 import static gmarmari.demo.microservices.orders.CommonDataFactory.aLong;
 import static gmarmari.demo.microservices.orders.CommonDataFactory.aText;
 import static gmarmari.demo.microservices.orders.OrderDataFactory.*;
-import static gmarmari.demo.microservices.orders.ProductDataFactory.aProductDao;
-import static gmarmari.demo.microservices.orders.ProductDataFactory.aProductDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -34,9 +31,6 @@ class OrderAdapterTest {
 
     @Captor
     private ArgumentCaptor<OrderDetailsDao> orderDetailsDaoCaptor;
-
-    @Captor
-    private ArgumentCaptor<List<ProductDao>> productDaoListCaptor;
 
     @InjectMocks
     private OrderAdapter adapter;
@@ -114,23 +108,19 @@ class OrderAdapterTest {
     }
 
     @Test
-    void getOrderProducts() {
+    void getOrderProductIds() {
         // Given
         long orderId = aLong();
 
-        List<ProductDao> products = List.of(aProductDao(true), aProductDao(true));
+        List<Long> productIds = List.of(aLong(), aLong());
 
-        when(service.getOrderProducts(orderId)).thenReturn(products);
+        when(service.getOrderProductIds(orderId)).thenReturn(productIds);
 
         // When
-        List<ProductDto> list = adapter.getOrderProducts(orderId);
+        List<Long> list = adapter.getOrderProductIds(orderId);
 
         // Then
-        assertThat(list.size()).isEqualTo(products.size());
-        for (int i=0;i<products.size();i++) {
-            verifyProduct(list.get(i), products.get(i));
-        }
-
+        assertThat(list).containsExactlyElementsOf(productIds);
         verifyNoMoreInteractions(service);
     }
 
@@ -210,34 +200,28 @@ class OrderAdapterTest {
     void saveOrderProducts() {
         // Given
         long orderId = aLong();
-        List<ProductDto> dtoList = List.of(aProductDto(), aProductDto());
+        List<Long> productIds = List.of(aLong(), aLong());
 
         // When
-        Response result = adapter.saveOrderProducts(orderId, dtoList);
+        Response result = adapter.saveOrderProducts(orderId, productIds);
 
         // Then
         assertThat(result).isEqualTo(Response.OK);
 
-        verify(service).saveOrderProducts(eq(orderId), productDaoListCaptor.capture());
+        verify(service).saveOrderProducts(orderId, productIds);
         verifyNoMoreInteractions(service);
-        List<ProductDao> daoList = productDaoListCaptor.getValue();
-
-        assertThat(dtoList.size()).isEqualTo(daoList.size());
-        for (int i=0;i<daoList.size();i++) {
-            verifyProduct(dtoList.get(i), daoList.get(i));
-        }
     }
 
     @Test
     void saveOrderProducts_error() {
         // Given
         long orderId = aLong();
-        List<ProductDto> dtoList = List.of(aProductDto(), aProductDto());
+        List<Long> productIds = List.of(aLong(), aLong());
 
         doThrow(new NullPointerException()).when(service).saveOrderProducts(eq(orderId), any());
 
         // When
-        Response result = adapter.saveOrderProducts(orderId, dtoList);
+        Response result = adapter.saveOrderProducts(orderId, productIds);
 
         // Then
         assertThat(result).isEqualTo(Response.ERROR);
@@ -257,14 +241,6 @@ class OrderAdapterTest {
         assertThat(dto.prize.unit.name()).isEqualTo(dao.getPrize().unit.name());
         assertThat(dto.deliveryFee.amount).isEqualTo(dao.getDeliveryFee().amount);
         assertThat(dto.deliveryFee.unit.name()).isEqualTo(dao.getDeliveryFee().unit.name());
-    }
-
-    private void verifyProduct(ProductDto dto, ProductDao dao) {
-        assertThat(dto.id).isEqualTo(dao.getId());
-        assertThat(dto.name).isEqualTo(dao.getName());
-        assertThat(dto.amount).isEqualTo(dao.getAmount());
-        assertThat(dto.prize.amount).isEqualTo(dao.getPrize().amount);
-        assertThat(dto.prize.unit.name()).isEqualTo(dao.getPrize().unit.name());
     }
 
     private void verifyOrderAddress(OrderAddressDto dto, OrderAddressDao dao) {

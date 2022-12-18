@@ -1,6 +1,9 @@
 package gmarmari.demo.microservices.orders.services.usecase;
 
-import gmarmari.demo.microservices.orders.entities.*;
+import gmarmari.demo.microservices.orders.entities.OrderAddressDao;
+import gmarmari.demo.microservices.orders.entities.OrderDao;
+import gmarmari.demo.microservices.orders.entities.OrderDetailsDao;
+import gmarmari.demo.microservices.orders.entities.OrderProductMappingDao;
 import gmarmari.demo.microservices.orders.repositories.OrderAddressRepository;
 import gmarmari.demo.microservices.orders.repositories.OrderProductMappingRepository;
 import gmarmari.demo.microservices.orders.repositories.OrderRepository;
@@ -10,8 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,10 +54,9 @@ public class OrderUseCase implements OrderService {
     }
 
     @Override
-    public List<ProductDao> getOrderProducts(long orderId) {
+    public List<Long> getOrderProductIds(long orderId) {
         return orderProductMappingRepository.findByOrderId(orderId).stream()
-                .map(OrderProductMappingDao::getProduct)
-                .sorted(Comparator.comparing(ProductDao::getName))
+                .map(OrderProductMappingDao::getProductId)
                 .toList();
     }
 
@@ -76,14 +76,12 @@ public class OrderUseCase implements OrderService {
     }
 
     @Override
-    public void saveOrderProducts(long orderId, List<ProductDao> products) {
-        OrderDao order = orderRepository.findById(orderId)
-                .orElseThrow(EntityNotFoundException::new);
-        orderProductMappingRepository.deleteByOrderId(order.getId());
-        products.forEach(product -> {
+    public void saveOrderProducts(long orderId,  List<Long> productIds) {
+        orderProductMappingRepository.deleteByOrderId(orderId);
+        productIds.forEach(productId -> {
             OrderProductMappingDao mapping = new OrderProductMappingDao();
-            mapping.setOrder(order);
-            mapping.setProduct(product);
+            mapping.setOrderId(orderId);
+            mapping.setProductId(productId);
             orderProductMappingRepository.save(mapping);
         });
     }

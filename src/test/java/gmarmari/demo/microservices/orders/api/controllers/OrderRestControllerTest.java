@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gmarmari.demo.microservices.orders.adapters.OrderAdapter;
 import gmarmari.demo.microservices.orders.api.OrderDetailsDto;
 import gmarmari.demo.microservices.orders.api.OrderDto;
-import gmarmari.demo.microservices.orders.api.ProductDto;
 import gmarmari.demo.microservices.orders.api.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import java.util.Optional;
 import static gmarmari.demo.microservices.orders.CommonDataFactory.aLong;
 import static gmarmari.demo.microservices.orders.OrderDataFactory.aOrderDetailsDto;
 import static gmarmari.demo.microservices.orders.OrderDataFactory.aOrderDto;
-import static gmarmari.demo.microservices.orders.ProductDataFactory.aProductDto;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -48,7 +46,7 @@ class OrderRestControllerTest {
         when(adapter.getOrders(USER_NAME)).thenReturn(list);
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/orders"));
+        ResultActions resultActions = mockMvc.perform(get("/"));
 
         // Then
         resultActions.andExpect(status().isOk())
@@ -65,7 +63,7 @@ class OrderRestControllerTest {
         when(adapter.getOrder(orderId)).thenReturn(Optional.of(dto));
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/orders/{id}", orderId));
+        ResultActions resultActions = mockMvc.perform(get("/{id}", orderId));
 
         // Then
         resultActions.andExpect(status().isOk())
@@ -80,7 +78,7 @@ class OrderRestControllerTest {
         when(adapter.getOrder(orderId)).thenReturn(Optional.empty());
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/orders/{orderId}", orderId));
+        ResultActions resultActions = mockMvc.perform(get("/{orderId}", orderId));
 
         // Then
         resultActions.andExpect(status().isNotFound());
@@ -94,7 +92,7 @@ class OrderRestControllerTest {
         when(adapter.getOrderDetails(orderId)).thenReturn(Optional.of(dto));
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/orders/{orderId}/details", orderId));
+        ResultActions resultActions = mockMvc.perform(get("/{orderId}/details", orderId));
 
         // Then
         resultActions.andExpect(status().isOk())
@@ -109,21 +107,21 @@ class OrderRestControllerTest {
         when(adapter.getOrderDetails(orderId)).thenReturn(Optional.empty());
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/orders/{orderId}/details", orderId));
+        ResultActions resultActions = mockMvc.perform(get("/{orderId}/details", orderId));
 
         // Then
         resultActions.andExpect(status().isNotFound());
     }
 
     @Test
-    void getOrderProducts() throws Exception {
+    void getOrderProductIds() throws Exception {
         // Given
         long orderId = aLong();
-        List<ProductDto> list = List.of(aProductDto(), aProductDto(), aProductDto());
-        when(adapter.getOrderProducts(orderId)).thenReturn(list);
+        List<Long> list = List.of(aLong(), aLong(), aLong());
+        when(adapter.getOrderProductIds(orderId)).thenReturn(list);
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/orders/{orderId}/products", orderId));
+        ResultActions resultActions = mockMvc.perform(get("/{orderId}/products", orderId));
 
         // Then
         resultActions.andExpect(status().isOk())
@@ -138,7 +136,7 @@ class OrderRestControllerTest {
         when(adapter.delete(orderId)).thenReturn(Response.OK);
 
         // When
-        ResultActions resultActions = mockMvc.perform(delete("/orders/{id}", orderId));
+        ResultActions resultActions = mockMvc.perform(delete("/{id}", orderId));
 
         // Then
         resultActions.andExpect(status().isOk());
@@ -151,7 +149,7 @@ class OrderRestControllerTest {
         when(adapter.delete(orderId)).thenReturn(Response.ERROR);
 
         // When
-        ResultActions resultActions = mockMvc.perform(delete("/orders/{id}", orderId));
+        ResultActions resultActions = mockMvc.perform(delete("/{id}", orderId));
 
         // Then
         resultActions.andExpect(status().isInternalServerError());
@@ -164,7 +162,7 @@ class OrderRestControllerTest {
         when(adapter.save(USER_NAME, dto)).thenReturn(Response.OK);
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/orders").
+        ResultActions resultActions = mockMvc.perform(post("/").
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(dto)));
 
@@ -179,7 +177,7 @@ class OrderRestControllerTest {
         when(adapter.save(USER_NAME, dto)).thenReturn(Response.ERROR);
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/orders").
+        ResultActions resultActions = mockMvc.perform(post("/").
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(dto)));
 
@@ -191,11 +189,11 @@ class OrderRestControllerTest {
     void saveOrderProducts() throws Exception {
         // Given
         long orderId = aLong();
-        List<ProductDto> list = List.of(aProductDto(), aProductDto(), aProductDto());
+        List<Long> list = List.of(aLong(), aLong(), aLong());
         when(adapter.saveOrderProducts(orderId, list)).thenReturn(Response.OK);
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/orders/{orderId}/products", orderId).
+        ResultActions resultActions = mockMvc.perform(post("/{orderId}/products", orderId).
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(list)));
 
@@ -207,11 +205,11 @@ class OrderRestControllerTest {
     void saveOrderProducts_error() throws Exception {
         // Given
         long orderId = aLong();
-        List<ProductDto> list = List.of(aProductDto(), aProductDto(), aProductDto());
+        List<Long> list = List.of(aLong(), aLong(), aLong());
         when(adapter.saveOrderProducts(orderId, list)).thenReturn(Response.ERROR);
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/orders/{orderId}/products", orderId).
+        ResultActions resultActions = mockMvc.perform(post("/{orderId}/products", orderId).
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(list)));
 

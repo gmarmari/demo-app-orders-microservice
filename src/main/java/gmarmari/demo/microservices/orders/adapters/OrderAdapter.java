@@ -32,10 +32,8 @@ public class OrderAdapter {
         return service.getOrderDetails(orderId).map(this::convert);
     }
 
-    public List<ProductDto> getOrderProducts(long orderId) {
-        return service.getOrderProducts(orderId).stream()
-                .map(this::convert)
-                .collect(Collectors.toList());
+    public List<Long> getOrderProductIds(long orderId) {
+        return service.getOrderProductIds(orderId);
     }
 
     public Response delete(long orderId) {
@@ -56,9 +54,9 @@ public class OrderAdapter {
         }
     }
 
-    public Response saveOrderProducts(long orderId, List<ProductDto> products) {
+    public Response saveOrderProducts(long orderId, List<Long> productIds) {
         try {
-            service.saveOrderProducts(orderId, products.stream().map(this::convert).collect(Collectors.toList()));
+            service.saveOrderProducts(orderId, productIds);
             return Response.OK;
         } catch (Exception e) {
             return Response.ERROR;
@@ -103,15 +101,6 @@ public class OrderAdapter {
                 dao.getTel(),
                 dao.getEmail(),
                 dao.getWebsite()
-        );
-    }
-
-    private ProductDto convert(ProductDao dao) {
-        return new ProductDto(
-                dao.getId(),
-                dao.getName(),
-                dao.getAmount(),
-                convert(dao.getPrize())
         );
     }
 
@@ -161,16 +150,6 @@ public class OrderAdapter {
         dao.setWebsite(dto.website);
         return dao;
     }
-
-    private ProductDao convert(ProductDto dto) {
-        ProductDao dao = new ProductDao();
-        dao.setId(dto.id);
-        dao.setName(dto.name);
-        dao.setAmount(dto.amount);
-        dao.setPrize(convert(dto.prize));
-        return dao;
-    }
-
 
     private PrizeDao convert(PrizeDto dto) {
         return new PrizeDao(
