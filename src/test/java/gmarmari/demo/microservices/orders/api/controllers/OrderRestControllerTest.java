@@ -46,7 +46,7 @@ class OrderRestControllerTest {
         when(adapter.getOrders(USER_NAME)).thenReturn(list);
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/"));
+        ResultActions resultActions = mockMvc.perform(get("/orders"));
 
         // Then
         resultActions.andExpect(status().isOk())
@@ -63,7 +63,7 @@ class OrderRestControllerTest {
         when(adapter.getOrder(orderId)).thenReturn(Optional.of(dto));
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/{id}", orderId));
+        ResultActions resultActions = mockMvc.perform(get("/orders/{id}", orderId));
 
         // Then
         resultActions.andExpect(status().isOk())
@@ -78,7 +78,7 @@ class OrderRestControllerTest {
         when(adapter.getOrder(orderId)).thenReturn(Optional.empty());
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/{orderId}", orderId));
+        ResultActions resultActions = mockMvc.perform(get("/orders/{orderId}", orderId));
 
         // Then
         resultActions.andExpect(status().isNotFound());
@@ -92,7 +92,7 @@ class OrderRestControllerTest {
         when(adapter.getOrderDetails(orderId)).thenReturn(Optional.of(dto));
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/{orderId}/details", orderId));
+        ResultActions resultActions = mockMvc.perform(get("/orders/{orderId}/details", orderId));
 
         // Then
         resultActions.andExpect(status().isOk())
@@ -107,7 +107,7 @@ class OrderRestControllerTest {
         when(adapter.getOrderDetails(orderId)).thenReturn(Optional.empty());
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/{orderId}/details", orderId));
+        ResultActions resultActions = mockMvc.perform(get("/orders/{orderId}/details", orderId));
 
         // Then
         resultActions.andExpect(status().isNotFound());
@@ -121,7 +121,7 @@ class OrderRestControllerTest {
         when(adapter.getOrderProductIds(orderId)).thenReturn(list);
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/{orderId}/products", orderId));
+        ResultActions resultActions = mockMvc.perform(get("/orders/{orderId}/products", orderId));
 
         // Then
         resultActions.andExpect(status().isOk())
@@ -136,7 +136,7 @@ class OrderRestControllerTest {
         when(adapter.delete(orderId)).thenReturn(Response.OK);
 
         // When
-        ResultActions resultActions = mockMvc.perform(delete("/{id}", orderId));
+        ResultActions resultActions = mockMvc.perform(delete("/orders/{id}", orderId));
 
         // Then
         resultActions.andExpect(status().isOk());
@@ -149,7 +149,7 @@ class OrderRestControllerTest {
         when(adapter.delete(orderId)).thenReturn(Response.ERROR);
 
         // When
-        ResultActions resultActions = mockMvc.perform(delete("/{id}", orderId));
+        ResultActions resultActions = mockMvc.perform(delete("/orders/{id}", orderId));
 
         // Then
         resultActions.andExpect(status().isInternalServerError());
@@ -162,7 +162,7 @@ class OrderRestControllerTest {
         when(adapter.save(USER_NAME, dto)).thenReturn(Response.OK);
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/").
+        ResultActions resultActions = mockMvc.perform(post("/orders").
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(dto)));
 
@@ -177,7 +177,7 @@ class OrderRestControllerTest {
         when(adapter.save(USER_NAME, dto)).thenReturn(Response.ERROR);
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/").
+        ResultActions resultActions = mockMvc.perform(post("/orders").
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(dto)));
 
@@ -193,7 +193,7 @@ class OrderRestControllerTest {
         when(adapter.saveOrderProducts(orderId, list)).thenReturn(Response.OK);
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/{orderId}/products", orderId).
+        ResultActions resultActions = mockMvc.perform(post("/orders/{orderId}/products", orderId).
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(list)));
 
@@ -209,7 +209,7 @@ class OrderRestControllerTest {
         when(adapter.saveOrderProducts(orderId, list)).thenReturn(Response.ERROR);
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/{orderId}/products", orderId).
+        ResultActions resultActions = mockMvc.perform(post("/orders/{orderId}/products", orderId).
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(list)));
 
