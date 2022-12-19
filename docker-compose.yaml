@@ -9,10 +9,14 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://orders-database:5432/george"
       SPRING_DATASOURCE_USERNAME: "george"
       SPRING_DATASOURCE_PASSWORD: "12345"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://demo-app-service-registry:8761/eureka
+    networks:
+      - default
+      - demo-app-network
     volumes:
       - "./log:/app/log"
     ports:
-      - "8001:8080"
+      - "8001:8001"
     depends_on:
       - orders-database
 
@@ -30,3 +34,7 @@ services:
 
 volumes:
   db-data:
+
+networks:
+  demo-app-network:
+    external: true
