@@ -2,7 +2,13 @@ package gmarmari.demo.microservices.orders.api.controllers;
 
 
 import gmarmari.demo.microservices.orders.adapters.OrderAdapter;
-import gmarmari.demo.microservices.orders.api.*;
+import gmarmari.demo.microservices.orders.api.OrderDetailsDto;
+import gmarmari.demo.microservices.orders.api.OrderDto;
+import gmarmari.demo.microservices.orders.api.OrderNotFoundException;
+import gmarmari.demo.microservices.orders.api.OrdersApi;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +19,8 @@ import java.util.List;
 @RestController
 public class OrderRestController implements OrdersApi {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderRestController.class);
+
     private final OrderAdapter adapter;
 
     @Autowired
@@ -21,8 +29,14 @@ public class OrderRestController implements OrdersApi {
     }
 
     @Override
+    @CircuitBreaker(name = "breaker", fallbackMethod = "getOrdersFallback")
     public List<OrderDto> getOrders() {
         return adapter.getOrders(getUsername());
+    }
+
+    public List<OrderDto> getOrdersFallback(Throwable t) {
+        LOGGER.warn("Fallback method for getOrders", t);
+        return List.of();
     }
 
     @Override
@@ -38,8 +52,14 @@ public class OrderRestController implements OrdersApi {
     }
 
     @Override
+    @CircuitBreaker(name = "breaker", fallbackMethod = "getOrderProductIdsFallback")
     public List<Long> getOrderProductIds(long orderId) {
         return adapter.getOrderProductIds(orderId);
+    }
+
+    public List<Long> getOrderProductIdsFallback(long orderId, Throwable t) {
+        LOGGER.warn("Fallback method for getOrderProductIds", t);
+        return List.of();
     }
 
     @Override
