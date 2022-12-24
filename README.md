@@ -42,8 +42,8 @@ A user can read / write / update / delete products and orders.
  
  # Api Docu
  
- * http://localhost:8080/swagger-ui/index.html
- * http://localhost:8080//v3/api-docs/
+ * http://localhost:8001/swagger-ui/index.html
+ * http://localhost:8001//v3/api-docs/
  
  
 
