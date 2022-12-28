@@ -18,15 +18,15 @@ public class CommonDataFactory {
     }
 
     public static int aInt() {
-        return random.nextInt();
+        return Math.abs(random.nextInt());
     }
 
     public static int aInt(int bound) {
-        return random.nextInt(bound);
+        return Math.abs(random.nextInt(bound));
     }
 
     public static long aLong() {
-        return random.nextLong();
+        return Math.abs(random.nextLong());
     }
 
     public static double aDouble() {

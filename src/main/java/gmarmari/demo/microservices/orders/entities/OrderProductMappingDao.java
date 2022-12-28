@@ -19,6 +19,8 @@ public class OrderProductMappingDao {
 
     private long productId;
 
+    private int amount;
+
     public long getId() {
         return id;
     }
@@ -43,6 +45,14 @@ public class OrderProductMappingDao {
         this.productId = productId;
     }
 
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,6 +72,7 @@ public class OrderProductMappingDao {
                 "id=" + id +
                 ", orderId=" + orderId +
                 ", productId=" + productId +
+                ", amount=" + amount +
                 '}';
     }
 }

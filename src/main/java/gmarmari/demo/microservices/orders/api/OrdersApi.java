@@ -69,14 +69,14 @@ public interface OrdersApi {
                     description = "OK",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Long.class))
+                            schema = @Schema(implementation = OrderProductDto.class))
             ),
             @ApiResponse(
                     responseCode = "404",
                     description = "Order not found")
 
     })
-    List<Long> getOrderProductIds(@PathVariable("orderId") long orderId);
+    List<OrderProductDto> getOrderProductIds(@PathVariable("orderId") long orderId);
 
     @DeleteMapping(path = "/{orderId}")
     @Operation(
@@ -111,7 +111,7 @@ public interface OrdersApi {
 
     @PostMapping(path = "/{orderId}/products", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
-            description = "Save the product ids of the order with the given order id"
+            description = "Save the ids and amount of the products of the order with the given order id"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -122,6 +122,6 @@ public interface OrdersApi {
                     description = "An error occurred by saving the products of the order")
 
     })
-    void saveOrderProducts(@PathVariable("orderId") long orderId, @RequestBody List<Long> productIds);
+    void saveOrderProducts(@PathVariable("orderId") long orderId, @RequestBody List<OrderProductDto> products);
 
 }

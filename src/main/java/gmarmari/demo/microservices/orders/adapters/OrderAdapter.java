@@ -32,8 +32,11 @@ public class OrderAdapter {
         return service.getOrderDetails(orderId).map(this::convert);
     }
 
-    public List<Long> getOrderProductIds(long orderId) {
-        return service.getOrderProductIds(orderId);
+    public List<OrderProductDto> getOrderProductIds(long orderId) {
+        return service.getOrderProductMappings(orderId)
+                .stream()
+                .map(this::convert)
+                .collect(Collectors.toList());
     }
 
     public Response delete(long orderId) {
@@ -54,15 +57,17 @@ public class OrderAdapter {
         }
     }
 
-    public Response saveOrderProducts(long orderId, List<Long> productIds) {
+    public Response saveOrderProducts(long orderId, List<OrderProductDto> products) {
         try {
-            service.saveOrderProducts(orderId, productIds);
+            List<OrderProductMappingDao> mappings = products.stream()
+                    .map(dto -> convert(orderId, dto))
+                    .collect(Collectors.toList());
+            service.saveOrderProductMappings(orderId, mappings);
             return Response.OK;
         } catch (Exception e) {
             return Response.ERROR;
         }
     }
-
 
 
     //region convert methods
@@ -104,13 +109,16 @@ public class OrderAdapter {
         );
     }
 
+    private OrderProductDto convert(OrderProductMappingDao dao) {
+        return new OrderProductDto(dao.getProductId(), dao.getAmount());
+    }
+
     private PrizeDto convert(PrizeDao dao) {
         return new PrizeDto(
                 dao.amount,
                 PrizeUnitDto.valueOf(dao.unit.name())
         );
     }
-
 
 
     private OrderDao convert(OrderDto dto, String username) {
@@ -148,6 +156,14 @@ public class OrderAdapter {
         dao.setTel(dto.tel);
         dao.setEmail(dto.email);
         dao.setWebsite(dto.website);
+        return dao;
+    }
+
+    private OrderProductMappingDao convert(long orderId, OrderProductDto dto) {
+        OrderProductMappingDao dao = new OrderProductMappingDao();
+        dao.setOrderId(orderId);
+        dao.setProductId(dto.productId);
+        dao.setAmount(dto.amount);
         return dao;
     }
 

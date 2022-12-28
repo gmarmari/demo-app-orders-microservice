@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gmarmari.demo.microservices.orders.adapters.OrderAdapter;
 import gmarmari.demo.microservices.orders.api.OrderDetailsDto;
 import gmarmari.demo.microservices.orders.api.OrderDto;
+import gmarmari.demo.microservices.orders.api.OrderProductDto;
 import gmarmari.demo.microservices.orders.api.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static gmarmari.demo.microservices.orders.CommonDataFactory.aLong;
-import static gmarmari.demo.microservices.orders.OrderDataFactory.aOrderDetailsDto;
-import static gmarmari.demo.microservices.orders.OrderDataFactory.aOrderDto;
+import static gmarmari.demo.microservices.orders.OrderDataFactory.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -117,7 +117,7 @@ class OrderRestControllerTest {
     void getOrderProductIds() throws Exception {
         // Given
         long orderId = aLong();
-        List<Long> list = List.of(aLong(), aLong(), aLong());
+        List<OrderProductDto> list = List.of(aOrderProductDto(), aOrderProductDto(), aOrderProductDto());
         when(adapter.getOrderProductIds(orderId)).thenReturn(list);
 
         // When
@@ -189,7 +189,7 @@ class OrderRestControllerTest {
     void saveOrderProducts() throws Exception {
         // Given
         long orderId = aLong();
-        List<Long> list = List.of(aLong(), aLong(), aLong());
+        List<OrderProductDto> list = List.of(aOrderProductDto(), aOrderProductDto(), aOrderProductDto());
         when(adapter.saveOrderProducts(orderId, list)).thenReturn(Response.OK);
 
         // When
@@ -205,7 +205,7 @@ class OrderRestControllerTest {
     void saveOrderProducts_error() throws Exception {
         // Given
         long orderId = aLong();
-        List<Long> list = List.of(aLong(), aLong(), aLong());
+        List<OrderProductDto> list = List.of(aOrderProductDto(), aOrderProductDto(), aOrderProductDto());
         when(adapter.saveOrderProducts(orderId, list)).thenReturn(Response.ERROR);
 
         // When

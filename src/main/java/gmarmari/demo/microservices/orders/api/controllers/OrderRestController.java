@@ -2,10 +2,7 @@ package gmarmari.demo.microservices.orders.api.controllers;
 
 
 import gmarmari.demo.microservices.orders.adapters.OrderAdapter;
-import gmarmari.demo.microservices.orders.api.OrderDetailsDto;
-import gmarmari.demo.microservices.orders.api.OrderDto;
-import gmarmari.demo.microservices.orders.api.OrderNotFoundException;
-import gmarmari.demo.microservices.orders.api.OrdersApi;
+import gmarmari.demo.microservices.orders.api.*;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +50,12 @@ public class OrderRestController implements OrdersApi {
 
     @Override
     @CircuitBreaker(name = "breaker", fallbackMethod = "getOrderProductIdsFallback")
-    public List<Long> getOrderProductIds(long orderId) {
+    public List<OrderProductDto> getOrderProductIds(long orderId) {
         return adapter.getOrderProductIds(orderId);
     }
 
-    public List<Long> getOrderProductIdsFallback(long orderId, Throwable t) {
-        LOGGER.warn("Fallback method for getOrderProductIds", t);
+    public List<OrderProductDto> getOrderProductIdsFallback(long orderId, Throwable t) {
+        LOGGER.warn("Fallback method for getOrderProductIds with input: " + orderId, t);
         return List.of();
     }
 
@@ -79,8 +76,8 @@ public class OrderRestController implements OrdersApi {
     }
 
     @Override
-    public void saveOrderProducts(long orderId, List<Long> productIds) {
-        adapter.saveOrderProducts(orderId, productIds)
+    public void saveOrderProducts(long orderId, List<OrderProductDto> products) {
+        adapter.saveOrderProducts(orderId, products)
                 .throwIfError(() -> new ResponseStatusException(
                         HttpStatus.INTERNAL_SERVER_ERROR,
                         "An error occurred by saving the order products"));
