@@ -54,10 +54,8 @@ public class OrderUseCase implements OrderService {
     }
 
     @Override
-    public List<Long> getOrderProductIds(long orderId) {
-        return orderProductMappingRepository.findByOrderId(orderId).stream()
-                .map(OrderProductMappingDao::getProductId)
-                .toList();
+    public List<OrderProductMappingDao> getOrderProductMappings(long orderId) {
+        return orderProductMappingRepository.findByOrderId(orderId);
     }
 
     @Override
@@ -76,13 +74,8 @@ public class OrderUseCase implements OrderService {
     }
 
     @Override
-    public void saveOrderProducts(long orderId,  List<Long> productIds) {
+    public void saveOrderProductMappings(long orderId,  List<OrderProductMappingDao> mappings) {
         orderProductMappingRepository.deleteByOrderId(orderId);
-        productIds.forEach(productId -> {
-            OrderProductMappingDao mapping = new OrderProductMappingDao();
-            mapping.setOrderId(orderId);
-            mapping.setProductId(productId);
-            orderProductMappingRepository.save(mapping);
-        });
+        orderProductMappingRepository.saveAll(mappings);
     }
 }

@@ -1,6 +1,9 @@
 package gmarmari.demo.microservices.orders.services.usecase;
 
-import gmarmari.demo.microservices.orders.entities.*;
+import gmarmari.demo.microservices.orders.entities.OrderAddressDao;
+import gmarmari.demo.microservices.orders.entities.OrderDao;
+import gmarmari.demo.microservices.orders.entities.OrderDetailsDao;
+import gmarmari.demo.microservices.orders.entities.OrderProductMappingDao;
 import gmarmari.demo.microservices.orders.repositories.OrderAddressRepository;
 import gmarmari.demo.microservices.orders.repositories.OrderProductMappingRepository;
 import gmarmari.demo.microservices.orders.repositories.OrderRepository;
@@ -136,10 +139,10 @@ class OrderUseCaseTest {
                 .thenReturn(List.of(mappingA, mappingB));
 
         // When
-        List<Long> list = useCase.getOrderProductIds(order.getId());
+        List<OrderProductMappingDao> list = useCase.getOrderProductMappings(order.getId());
 
         // Then
-        assertThat(list).containsExactly(productIdA, productIdB);
+        assertThat(list).containsExactly(mappingA, mappingB);
         verifyNoInteractions(orderRepository);
         verifyNoInteractions(orderAddressRepository);
         verifyNoMoreInteractions(orderProductMappingRepository);
@@ -167,22 +170,17 @@ class OrderUseCaseTest {
     }
 
     @Test
-    void saveOrderProducts() {
+    void saveOrderProductMappings() {
         // Given
         long orderId = aLong();
-        List<Long> productIds = List.of(aLong(), aLong(), aLong());
+        List<OrderProductMappingDao> mappings = List.of(aOrderProductMappingDao(), aOrderProductMappingDao(), aOrderProductMappingDao());
 
         // When
-        useCase.saveOrderProducts(orderId, productIds);
+        useCase.saveOrderProductMappings(orderId, mappings);
 
         // Then
         verify(orderProductMappingRepository).deleteByOrderId(orderId);
-        productIds.forEach(productId -> {
-            OrderProductMappingDao mapping = new OrderProductMappingDao();
-            mapping.setOrderId(orderId);
-            mapping.setProductId(productId);
-            verify(orderProductMappingRepository, atLeast(1)).save(mapping);
-        });
+        verify(orderProductMappingRepository).saveAll(mappings);
         verifyNoMoreInteractions(orderProductMappingRepository);
 
         verifyNoMoreInteractions(orderRepository);

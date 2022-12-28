@@ -10,7 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.stream.Collectors;
 
-import static gmarmari.demo.microservices.orders.CommonDataFactory.aLong;
 import static gmarmari.demo.microservices.orders.OrderDataFactory.aOrderDao;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,17 +35,24 @@ class OrderProductMappingRepositoryTest {
         long productId1 = 1;
         long productId2 = 2;
 
+        int amount1 = 1;
+        int amount2 = 2;
+        int amount3 = 3;
+
         OrderProductMappingDao mapping1 = new OrderProductMappingDao();
         mapping1.setOrderId(orderIdA);
         mapping1.setProductId(productId1);
+        mapping1.setAmount(amount1);
 
         OrderProductMappingDao mapping2 = new OrderProductMappingDao();
         mapping2.setOrderId(orderIdA);
         mapping2.setProductId(productId2);
+        mapping2.setAmount(amount2);
 
         OrderProductMappingDao mapping3 = new OrderProductMappingDao();
         mapping3.setOrderId(orderIdB);
         mapping3.setProductId(productId1);
+        mapping3.setAmount(amount3);
 
         // When
         repository.save(mapping1);
@@ -56,8 +62,13 @@ class OrderProductMappingRepositoryTest {
         // Then
         assertThat(repository.findByOrderId(orderIdA).stream()
                 .map(OrderProductMappingDao::getProductId).collect(Collectors.toList())).containsExactlyInAnyOrder(productId1, productId2);
+        assertThat(repository.findByOrderId(orderIdA).stream()
+                .map(OrderProductMappingDao::getAmount).collect(Collectors.toList())).containsExactlyInAnyOrder(amount1, amount2);
+
         assertThat(repository.findByOrderId(orderIdB).stream()
                 .map(OrderProductMappingDao::getProductId).collect(Collectors.toList())).containsExactly(productId1);
+        assertThat(repository.findByOrderId(orderIdB).stream()
+                .map(OrderProductMappingDao::getAmount).collect(Collectors.toList())).containsExactly(amount3);
     }
 
     @Test

@@ -5,6 +5,7 @@ import gmarmari.demo.microservices.orders.api.*;
 import gmarmari.demo.microservices.orders.entities.OrderAddressDao;
 import gmarmari.demo.microservices.orders.entities.OrderDao;
 import gmarmari.demo.microservices.orders.entities.OrderDetailsDao;
+import gmarmari.demo.microservices.orders.entities.OrderProductMappingDao;
 import gmarmari.demo.microservices.orders.services.OrderService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,9 @@ class OrderAdapterTest {
 
     @Captor
     private ArgumentCaptor<OrderDetailsDao> orderDetailsDaoCaptor;
+
+    @Captor
+    private ArgumentCaptor<List<OrderProductMappingDao>> orderProductMappingListCaptor;
 
     @InjectMocks
     private OrderAdapter adapter;
@@ -111,16 +115,19 @@ class OrderAdapterTest {
     void getOrderProductIds() {
         // Given
         long orderId = aLong();
+        OrderProductMappingDao daoA = aOrderProductMappingDao();
+        OrderProductMappingDao daoB = aOrderProductMappingDao();
 
-        List<Long> productIds = List.of(aLong(), aLong());
-
-        when(service.getOrderProductIds(orderId)).thenReturn(productIds);
+        when(service.getOrderProductMappings(orderId)).thenReturn(List.of(daoA, daoB));
 
         // When
-        List<Long> list = adapter.getOrderProductIds(orderId);
+        List<OrderProductDto> list = adapter.getOrderProductIds(orderId);
 
         // Then
-        assertThat(list).containsExactlyElementsOf(productIds);
+        assertThat(list).containsExactly(
+                new OrderProductDto(daoA.getProductId(), daoA.getAmount()),
+                new OrderProductDto(daoB.getProductId(), daoB.getAmount())
+        );
         verifyNoMoreInteractions(service);
     }
 
@@ -200,15 +207,20 @@ class OrderAdapterTest {
     void saveOrderProducts() {
         // Given
         long orderId = aLong();
-        List<Long> productIds = List.of(aLong(), aLong());
+        List<OrderProductDto> dtoList = List.of(aOrderProductDto(), aOrderProductDto());
 
         // When
-        Response result = adapter.saveOrderProducts(orderId, productIds);
+        Response result = adapter.saveOrderProducts(orderId, dtoList);
 
         // Then
         assertThat(result).isEqualTo(Response.OK);
 
-        verify(service).saveOrderProducts(orderId, productIds);
+        verify(service).saveOrderProductMappings(eq(orderId), orderProductMappingListCaptor.capture());
+
+        List<OrderProductMappingDao> daoList = orderProductMappingListCaptor.getValue();
+        assertThat(daoList).hasSize(2);
+        verifyOrderProducts(orderId, dtoList.get(0), daoList.get(0));
+        verifyOrderProducts(orderId, dtoList.get(1), daoList.get(1));
         verifyNoMoreInteractions(service);
     }
 
@@ -216,12 +228,12 @@ class OrderAdapterTest {
     void saveOrderProducts_error() {
         // Given
         long orderId = aLong();
-        List<Long> productIds = List.of(aLong(), aLong());
+        List<OrderProductDto> dtoList = List.of(aOrderProductDto(), aOrderProductDto());
 
-        doThrow(new NullPointerException()).when(service).saveOrderProducts(eq(orderId), any());
+        doThrow(new NullPointerException()).when(service).saveOrderProductMappings(eq(orderId), any());
 
         // When
-        Response result = adapter.saveOrderProducts(orderId, productIds);
+        Response result = adapter.saveOrderProducts(orderId, dtoList);
 
         // Then
         assertThat(result).isEqualTo(Response.ERROR);
@@ -256,6 +268,12 @@ class OrderAdapterTest {
         assertThat(dto.tel).isEqualTo(dao.getTel());
         assertThat(dto.email).isEqualTo(dao.getEmail());
         assertThat(dto.website).isEqualTo(dao.getWebsite());
+    }
+
+    private void verifyOrderProducts(long orderId, OrderProductDto dto, OrderProductMappingDao dao) {
+        assertThat(orderId).isEqualTo(dao.getOrderId());
+        assertThat(dto.productId).isEqualTo(dao.getProductId());
+        assertThat(dto.amount).isEqualTo(dao.getAmount());
     }
 
 }

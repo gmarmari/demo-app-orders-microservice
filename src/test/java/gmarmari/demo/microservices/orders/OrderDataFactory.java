@@ -75,6 +75,10 @@ public class OrderDataFactory {
         );
     }
 
+    public static OrderProductDto aOrderProductDto() {
+        return new OrderProductDto(aLong(), aInt());
+    }
+
     public static PrizeDto aPrizeDto() {
         int index = aInt(PrizeUnitDto.values().length);
         return new PrizeDto(aDouble(), PrizeUnitDto.values()[index]);
@@ -155,6 +159,21 @@ public class OrderDataFactory {
                 order,
                 List.of(shippingAddress, billingAddress)
         );
+    }
+
+    public static OrderProductMappingDao aOrderProductMappingDao() {
+        return aOrderProductMappingDao(false);
+    }
+
+    public static OrderProductMappingDao aOrderProductMappingDao(boolean withId) {
+        OrderProductMappingDao dao = new OrderProductMappingDao();
+        if (withId) {
+            dao.setId(aLong());
+        }
+        dao.setOrderId(aLong());
+        dao.setProductId(aLong());
+        dao.setAmount(aInt());
+        return dao;
     }
 
     public static PrizeDao aPrizeDao() {
