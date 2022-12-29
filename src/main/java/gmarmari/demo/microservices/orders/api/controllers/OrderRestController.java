@@ -49,17 +49,6 @@ public class OrderRestController implements OrdersApi {
     }
 
     @Override
-    @CircuitBreaker(name = "breaker", fallbackMethod = "getOrderProductIdsFallback")
-    public List<OrderProductDto> getOrderProductIds(long orderId) {
-        return adapter.getOrderProductIds(orderId);
-    }
-
-    public List<OrderProductDto> getOrderProductIdsFallback(long orderId, Throwable t) {
-        LOGGER.warn("Fallback method for getOrderProductIds with input: " + orderId, t);
-        return List.of();
-    }
-
-    @Override
     public void deleteById(long orderId) {
         adapter.delete(orderId)
                 .throwIfError(() -> new ResponseStatusException(

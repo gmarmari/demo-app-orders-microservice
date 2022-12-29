@@ -50,13 +50,10 @@ public class OrderUseCase implements OrderService {
     public Optional<OrderDetailsDao> getOrderDetails(long orderId) {
         Optional<OrderDao> optionalOrder = orderRepository.findById(orderId);
         List<OrderAddressDao> addresses = orderAddressRepository.findByOrderId(orderId, ORDER_ADDRESS_SORT);
-        return optionalOrder.map(orderDao -> new OrderDetailsDao(orderDao, addresses));
+        List<OrderProductMappingDao> products = orderProductMappingRepository.findByOrderId(orderId);
+        return optionalOrder.map(orderDao -> new OrderDetailsDao(orderDao, addresses, products));
     }
 
-    @Override
-    public List<OrderProductMappingDao> getOrderProductMappings(long orderId) {
-        return orderProductMappingRepository.findByOrderId(orderId);
-    }
 
     @Override
     public void delete(long orderId) {

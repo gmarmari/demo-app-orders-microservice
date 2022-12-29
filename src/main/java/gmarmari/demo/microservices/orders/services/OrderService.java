@@ -16,8 +16,6 @@ public interface OrderService {
 
     Optional<OrderDetailsDao> getOrderDetails(long orderId);
 
-    List<OrderProductMappingDao> getOrderProductMappings(long orderId);
-
     void delete(long orderId);
 
     void save(OrderDetailsDao orderDetails);

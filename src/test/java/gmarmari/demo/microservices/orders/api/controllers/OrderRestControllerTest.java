@@ -114,22 +114,6 @@ class OrderRestControllerTest {
     }
 
     @Test
-    void getOrderProductIds() throws Exception {
-        // Given
-        long orderId = aLong();
-        List<OrderProductDto> list = List.of(aOrderProductDto(), aOrderProductDto(), aOrderProductDto());
-        when(adapter.getOrderProductIds(orderId)).thenReturn(list);
-
-        // When
-        ResultActions resultActions = mockMvc.perform(get("/orders/{orderId}/products", orderId));
-
-        // Then
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(list)));
-    }
-
-    @Test
     void deleteById() throws Exception {
         // Given
         long orderId = aLong();

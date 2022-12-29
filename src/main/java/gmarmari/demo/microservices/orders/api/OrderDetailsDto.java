@@ -16,11 +16,16 @@ public class OrderDetailsDto {
     @NotNull
     public final List<OrderAddressDto> addresses;
 
+    @NotNull
+    public final List<OrderProductDto> products;
+
 
     public OrderDetailsDto(@JsonProperty("order") OrderDto order,
-                           @JsonProperty("addresses") List<OrderAddressDto> addresses) {
+                           @JsonProperty("addresses") List<OrderAddressDto> addresses,
+                           @JsonProperty("products") List<OrderProductDto> products) {
         this.order = order;
         this.addresses = addresses;
+        this.products = products;
     }
 
     @Override
@@ -28,12 +33,12 @@ public class OrderDetailsDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderDetailsDto that = (OrderDetailsDto) o;
-        return Objects.equals(order, that.order) && Objects.equals(addresses, that.addresses);
+        return Objects.equals(order, that.order) && Objects.equals(addresses, that.addresses) && Objects.equals(products, that.products);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(order, addresses);
+        return Objects.hash(order, addresses, products);
     }
 
     @Override
@@ -41,6 +46,7 @@ public class OrderDetailsDto {
         return "OrderDetailsDto{" +
                 "order=" + order +
                 ", addresses=" + addresses +
+                ", products=" + products +
                 '}';
     }
 }

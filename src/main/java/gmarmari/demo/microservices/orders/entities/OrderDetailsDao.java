@@ -12,10 +12,15 @@ public class OrderDetailsDao {
     @NotNull
     public final List<OrderAddressDao> addresses;
 
+    @NotNull
+    public final List<OrderProductMappingDao> products;
+
     public OrderDetailsDao(@NotNull OrderDao order,
-                           @NotNull List<OrderAddressDao> addresses) {
+                           @NotNull List<OrderAddressDao> addresses,
+                           @NotNull List<OrderProductMappingDao> products) {
         this.order = order;
         this.addresses = addresses;
+        this.products = products;
     }
 
     @Override
@@ -23,12 +28,12 @@ public class OrderDetailsDao {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderDetailsDao that = (OrderDetailsDao) o;
-        return Objects.equals(order, that.order) && Objects.equals(addresses, that.addresses);
+        return Objects.equals(order, that.order) && Objects.equals(addresses, that.addresses) && Objects.equals(products, that.products);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(order, addresses);
+        return Objects.hash(order, addresses, products);
     }
 
     @Override
@@ -36,6 +41,7 @@ public class OrderDetailsDao {
         return "OrderDetailsDao{" +
                 "order=" + order +
                 ", addresses=" + addresses +
+                ", products=" + products +
                 '}';
     }
 }
