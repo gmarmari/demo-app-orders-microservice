@@ -32,13 +32,6 @@ public class OrderAdapter {
         return service.getOrderDetails(orderId).map(this::convert);
     }
 
-    public List<OrderProductDto> getOrderProductIds(long orderId) {
-        return service.getOrderProductMappings(orderId)
-                .stream()
-                .map(this::convert)
-                .collect(Collectors.toList());
-    }
-
     public Response delete(long orderId) {
         try {
             service.delete(orderId);
@@ -88,7 +81,8 @@ public class OrderAdapter {
     private OrderDetailsDto convert(OrderDetailsDao dao) {
         return new OrderDetailsDto(
                 convert(dao.order),
-                dao.addresses.stream().map(this::convert).collect(Collectors.toList())
+                dao.addresses.stream().map(this::convert).collect(Collectors.toList()),
+                dao.products.stream().map(this::convert).collect(Collectors.toList())
         );
     }
 
@@ -136,7 +130,8 @@ public class OrderAdapter {
     private OrderDetailsDao convert(OrderDetailsDto dto, String username) {
         return new OrderDetailsDao(
                 convert(dto.order, username),
-                dto.addresses.stream().map(this::convert).collect(Collectors.toList())
+                dto.addresses.stream().map(this::convert).collect(Collectors.toList()),
+                dto.products.stream().map(p -> convert(dto.order.id, p)).collect(Collectors.toList())
         );
     }
 

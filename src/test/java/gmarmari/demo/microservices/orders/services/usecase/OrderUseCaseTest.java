@@ -108,22 +108,6 @@ class OrderUseCaseTest {
         when(orderAddressRepository.findByOrderId(order.getId(), Sort.by("type").ascending()))
                 .thenReturn(List.of(addressA, addressB));
 
-        // When
-        Optional<OrderDetailsDao> result = useCase.getOrderDetails(order.getId());
-
-        // Then
-        assertThat(result).isPresent();
-        assertThat(result.get().order).isEqualTo(order);
-        assertThat(result.get().addresses).containsExactly(addressA, addressB);
-        verifyNoMoreInteractions(orderRepository);
-        verifyNoMoreInteractions(orderAddressRepository);
-        verifyNoInteractions(orderProductMappingRepository);
-    }
-
-    @Test
-    void getOrderProductIds() {
-        // Given
-        OrderDao order = aOrderDao(true);
         long productIdA = aLong();
         long productIdB = aLong();
 
@@ -139,12 +123,15 @@ class OrderUseCaseTest {
                 .thenReturn(List.of(mappingA, mappingB));
 
         // When
-        List<OrderProductMappingDao> list = useCase.getOrderProductMappings(order.getId());
+        Optional<OrderDetailsDao> result = useCase.getOrderDetails(order.getId());
 
         // Then
-        assertThat(list).containsExactly(mappingA, mappingB);
-        verifyNoInteractions(orderRepository);
-        verifyNoInteractions(orderAddressRepository);
+        assertThat(result).isPresent();
+        assertThat(result.get().order).isEqualTo(order);
+        assertThat(result.get().addresses).containsExactly(addressA, addressB);
+        assertThat(result.get().products).containsExactly(mappingA, mappingB);
+        verifyNoMoreInteractions(orderRepository);
+        verifyNoMoreInteractions(orderAddressRepository);
         verifyNoMoreInteractions(orderProductMappingRepository);
     }
 

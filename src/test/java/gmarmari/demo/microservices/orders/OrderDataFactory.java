@@ -69,7 +69,8 @@ public class OrderDataFactory {
     public static OrderDetailsDto aOrderDetailsDto(long orderId) {
         return new OrderDetailsDto(
                 aOrderDto(orderId),
-                List.of(aOrderAddressDto(orderId))
+                List.of(aOrderAddressDto(orderId)),
+                List.of(aOrderProductDto())
         );
     }
 
@@ -151,9 +152,13 @@ public class OrderDataFactory {
         billingAddress.setType(OrderAddressTypeDao.BILLING);
         billingAddress.setOrderId(orderId);
 
+        OrderProductMappingDao productMappingDao = aOrderProductMappingDao();
+        productMappingDao.setOrderId(orderId);
+
         return new OrderDetailsDao(
                 order,
-                List.of(shippingAddress, billingAddress)
+                List.of(shippingAddress, billingAddress),
+                List.of(productMappingDao)
         );
     }
 

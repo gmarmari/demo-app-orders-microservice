@@ -59,25 +59,6 @@ public interface OrdersApi {
     })
     OrderDetailsDto getOrderDetailsById(@PathVariable("orderId") long orderId);
 
-    @GetMapping(path = "/{orderId}/products", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(
-            description = "Get the product ids of the order with the given order id"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "OK",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = OrderProductDto.class))
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Order not found")
-
-    })
-    List<OrderProductDto> getOrderProductIds(@PathVariable("orderId") long orderId);
-
     @DeleteMapping(path = "/{orderId}")
     @Operation(
             description = "Delete the order and its details with the given order id"

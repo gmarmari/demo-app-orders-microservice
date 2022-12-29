@@ -107,27 +107,10 @@ class OrderAdapterTest {
         for (int i=0;i<dao.addresses.size();i++) {
             verifyOrderAddress(result.get().addresses.get(i), dao.addresses.get(i));
         }
+        for (int i=0;i<dao.products.size();i++) {
+            verifyOrderProducts(orderId, result.get().products.get(i), dao.products.get(i));
+        }
 
-        verifyNoMoreInteractions(service);
-    }
-
-    @Test
-    void getOrderProductIds() {
-        // Given
-        long orderId = aLong();
-        OrderProductMappingDao daoA = aOrderProductMappingDao();
-        OrderProductMappingDao daoB = aOrderProductMappingDao();
-
-        when(service.getOrderProductMappings(orderId)).thenReturn(List.of(daoA, daoB));
-
-        // When
-        List<OrderProductDto> list = adapter.getOrderProductIds(orderId);
-
-        // Then
-        assertThat(list).containsExactly(
-                new OrderProductDto(daoA.getProductId(), daoA.getAmount()),
-                new OrderProductDto(daoB.getProductId(), daoB.getAmount())
-        );
         verifyNoMoreInteractions(service);
     }
 
