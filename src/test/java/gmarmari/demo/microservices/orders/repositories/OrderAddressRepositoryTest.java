@@ -55,8 +55,6 @@ class OrderAddressRepositoryTest {
         assertThat(result.getState()).isEqualTo(address.getState());
         assertThat(result.getCountry()).isEqualTo(address.getCountry());
         assertThat(result.getTel()).isEqualTo(address.getTel());
-        assertThat(result.getEmail()).isEqualTo(address.getEmail());
-        assertThat(result.getWebsite()).isEqualTo(address.getWebsite());
     }
 
     @Test

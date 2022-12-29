@@ -70,12 +70,6 @@
             <column name="tel" type="varchar(32)">
                 <constraints nullable="true"/>
             </column>
-            <column name="email" type="varchar(100)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="website" type="varchar(100)">
-                <constraints nullable="true"/>
-            </column>
         </createTable>
 
         <createIndex tableName="order_address" indexName="index_order_address_order_id_type" unique="true">

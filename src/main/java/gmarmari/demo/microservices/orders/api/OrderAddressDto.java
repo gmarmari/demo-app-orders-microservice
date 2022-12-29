@@ -44,16 +44,8 @@ public class OrderAddressDto {
     public final String country;
 
     @Nullable
-    @Size(max = 100)
+    @Size(max = 32)
     public final String tel;
-
-    @Nullable
-    @Size(max = 100)
-    public final String email;
-
-    @Nullable
-    @Size(max = 100)
-    public final String website;
 
     public OrderAddressDto(@JsonProperty("id") long id,
                            @JsonProperty("orderId") long orderId,
@@ -64,9 +56,7 @@ public class OrderAddressDto {
                            @JsonProperty("city") String city,
                            @Nullable @JsonProperty("state") String state,
                            @JsonProperty("country") String country,
-                           @Nullable @JsonProperty("tel") String tel,
-                           @Nullable @JsonProperty("email") String email,
-                           @Nullable @JsonProperty("website") String website) {
+                           @Nullable @JsonProperty("tel") String tel) {
         this.id = id;
         this.orderId = orderId;
         this.type = type;
@@ -77,8 +67,6 @@ public class OrderAddressDto {
         this.state = state;
         this.country = country;
         this.tel = tel;
-        this.email = email;
-        this.website = website;
     }
 
     @Override
@@ -86,12 +74,12 @@ public class OrderAddressDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderAddressDto that = (OrderAddressDto) o;
-        return id == that.id && orderId == that.orderId && type == that.type && Objects.equals(name, that.name) && Objects.equals(street, that.street) && Objects.equals(postalCode, that.postalCode) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(country, that.country) && Objects.equals(tel, that.tel) && Objects.equals(email, that.email) && Objects.equals(website, that.website);
+        return id == that.id && orderId == that.orderId && type == that.type && Objects.equals(name, that.name) && Objects.equals(street, that.street) && Objects.equals(postalCode, that.postalCode) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(country, that.country) && Objects.equals(tel, that.tel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderId, type, name, street, postalCode, city, state, country, tel, email, website);
+        return Objects.hash(id, orderId, type, name, street, postalCode, city, state, country, tel);
     }
 
     @Override
@@ -107,8 +95,6 @@ public class OrderAddressDto {
                 ", state='" + state + '\'' +
                 ", country='" + country + '\'' +
                 ", tel='" + tel + '\'' +
-                ", email='" + email + '\'' +
-                ", website='" + website + '\'' +
                 '}';
     }
 }
