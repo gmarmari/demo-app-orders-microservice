@@ -41,11 +41,6 @@ public class OrderAddressDao {
     @Nullable
     private String tel;
 
-    @Nullable
-    private String email;
-
-    @Nullable
-    private String website;
 
     public long getId() {
         return id;
@@ -129,24 +124,6 @@ public class OrderAddressDao {
         this.tel = tel;
     }
 
-    @Nullable
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(@Nullable String email) {
-        this.email = email;
-    }
-
-    @Nullable
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(@Nullable String website) {
-        this.website = website;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -173,8 +150,6 @@ public class OrderAddressDao {
                 ", state='" + state + '\'' +
                 ", country='" + country + '\'' +
                 ", tel='" + tel + '\'' +
-                ", email='" + email + '\'' +
-                ", website='" + website + '\'' +
                 '}';
     }
 }

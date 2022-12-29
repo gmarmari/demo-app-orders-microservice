@@ -103,9 +103,7 @@ public class OrderAdapter {
                 dao.getCity(),
                 dao.getState(),
                 dao.getCountry(),
-                dao.getTel(),
-                dao.getEmail(),
-                dao.getWebsite()
+                dao.getTel()
         );
     }
 
@@ -154,8 +152,6 @@ public class OrderAdapter {
         dao.setState(dto.state);
         dao.setCountry(dto.country);
         dao.setTel(dto.tel);
-        dao.setEmail(dto.email);
-        dao.setWebsite(dto.website);
         return dao;
     }
 

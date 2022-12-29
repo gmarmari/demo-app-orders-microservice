@@ -58,8 +58,6 @@ public class OrderDataFactory {
                 aText(),
                 aNullableText(),
                 aText(),
-                aNullableText(),
-                aNullableText(),
                 aNullableText()
         );
     }
@@ -136,8 +134,6 @@ public class OrderDataFactory {
         dao.setState(aNullableText());
         dao.setCountry(aText());
         dao.setTel(aNullableText());
-        dao.setEmail(aNullableText());
-        dao.setWebsite(aNullableText());
         return dao;
     }
 

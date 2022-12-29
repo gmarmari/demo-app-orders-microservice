@@ -266,8 +266,6 @@ class OrderAdapterTest {
         assertThat(dto.state).isEqualTo(dao.getState());
         assertThat(dto.country).isEqualTo(dao.getCountry());
         assertThat(dto.tel).isEqualTo(dao.getTel());
-        assertThat(dto.email).isEqualTo(dao.getEmail());
-        assertThat(dto.website).isEqualTo(dao.getWebsite());
     }
 
     private void verifyOrderProducts(long orderId, OrderProductDto dto, OrderProductMappingDao dao) {
