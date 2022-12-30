@@ -64,14 +64,6 @@ public class OrderRestController implements OrdersApi {
                         "An error occurred by saving the order"));
     }
 
-    @Override
-    public void saveOrderProducts(long orderId, List<OrderProductDto> products) {
-        adapter.saveOrderProducts(orderId, products)
-                .throwIfError(() -> new ResponseStatusException(
-                        HttpStatus.INTERNAL_SERVER_ERROR,
-                        "An error occurred by saving the order products"));
-    }
-
     private String getUsername() {
         // Authentication not implemented yet
         return "super_user";

@@ -90,19 +90,4 @@ public interface OrdersApi {
     })
     void saveOrder(@RequestBody OrderDetailsDto orderDetails);
 
-    @PostMapping(path = "/{orderId}/products", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(
-            description = "Save the ids and amount of the products of the order with the given order id"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Order products were saved"),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "An error occurred by saving the products of the order")
-
-    })
-    void saveOrderProducts(@PathVariable("orderId") long orderId, @RequestBody List<OrderProductDto> products);
-
 }

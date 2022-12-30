@@ -20,5 +20,4 @@ public interface OrderService {
 
     void save(OrderDetailsDao orderDetails);
 
-    void saveOrderProductMappings(long orderId, List<OrderProductMappingDao> mappings);
 }

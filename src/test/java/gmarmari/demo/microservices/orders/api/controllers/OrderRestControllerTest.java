@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gmarmari.demo.microservices.orders.adapters.OrderAdapter;
 import gmarmari.demo.microservices.orders.api.OrderDetailsDto;
 import gmarmari.demo.microservices.orders.api.OrderDto;
-import gmarmari.demo.microservices.orders.api.OrderProductDto;
 import gmarmari.demo.microservices.orders.api.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static gmarmari.demo.microservices.orders.CommonDataFactory.aLong;
-import static gmarmari.demo.microservices.orders.OrderDataFactory.*;
+import static gmarmari.demo.microservices.orders.OrderDataFactory.aOrderDetailsDto;
+import static gmarmari.demo.microservices.orders.OrderDataFactory.aOrderDto;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -168,40 +168,5 @@ class OrderRestControllerTest {
         // Then
         resultActions.andExpect(status().isInternalServerError());
     }
-
-    @Test
-    void saveOrderProducts() throws Exception {
-        // Given
-        long orderId = aLong();
-        List<OrderProductDto> list = List.of(aOrderProductDto(), aOrderProductDto(), aOrderProductDto());
-        when(adapter.saveOrderProducts(orderId, list)).thenReturn(Response.OK);
-
-        // When
-        ResultActions resultActions = mockMvc.perform(post("/orders/{orderId}/products", orderId).
-                contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(list)));
-
-        // Then
-        resultActions.andExpect(status().isOk());
-    }
-
-    @Test
-    void saveOrderProducts_error() throws Exception {
-        // Given
-        long orderId = aLong();
-        List<OrderProductDto> list = List.of(aOrderProductDto(), aOrderProductDto(), aOrderProductDto());
-        when(adapter.saveOrderProducts(orderId, list)).thenReturn(Response.ERROR);
-
-        // When
-        ResultActions resultActions = mockMvc.perform(post("/orders/{orderId}/products", orderId).
-                contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(list)));
-
-        // Then
-        resultActions.andExpect(status().isInternalServerError());
-    }
-
-
-
 
 }
