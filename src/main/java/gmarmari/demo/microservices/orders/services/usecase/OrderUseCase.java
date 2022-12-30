@@ -68,11 +68,9 @@ public class OrderUseCase implements OrderService {
 
         orderAddressRepository.deleteByOrderId(savedOrder.getId());
         orderDetails.addresses.forEach(orderAddressRepository::save);
+
+        orderProductMappingRepository.deleteByOrderId(savedOrder.getId());
+        orderProductMappingRepository.saveAll(orderDetails.products);
     }
 
-    @Override
-    public void saveOrderProductMappings(long orderId,  List<OrderProductMappingDao> mappings) {
-        orderProductMappingRepository.deleteByOrderId(orderId);
-        orderProductMappingRepository.saveAll(mappings);
-    }
 }

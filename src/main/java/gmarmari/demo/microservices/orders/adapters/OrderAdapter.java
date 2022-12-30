@@ -50,18 +50,6 @@ public class OrderAdapter {
         }
     }
 
-    public Response saveOrderProducts(long orderId, List<OrderProductDto> products) {
-        try {
-            List<OrderProductMappingDao> mappings = products.stream()
-                    .map(dto -> convert(orderId, dto))
-                    .collect(Collectors.toList());
-            service.saveOrderProductMappings(orderId, mappings);
-            return Response.OK;
-        } catch (Exception e) {
-            return Response.ERROR;
-        }
-    }
-
 
     //region convert methods
 

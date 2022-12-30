@@ -153,25 +153,9 @@ class OrderUseCaseTest {
         orderDetails.addresses.forEach(address -> verify(orderAddressRepository).save(address));
         verifyNoMoreInteractions(orderAddressRepository);
 
-        verifyNoInteractions(orderProductMappingRepository);
-    }
-
-    @Test
-    void saveOrderProductMappings() {
-        // Given
-        long orderId = aLong();
-        List<OrderProductMappingDao> mappings = List.of(aOrderProductMappingDao(), aOrderProductMappingDao(), aOrderProductMappingDao());
-
-        // When
-        useCase.saveOrderProductMappings(orderId, mappings);
-
-        // Then
-        verify(orderProductMappingRepository).deleteByOrderId(orderId);
-        verify(orderProductMappingRepository).saveAll(mappings);
+        verify(orderProductMappingRepository).deleteByOrderId(orderDetails.order.getId());
+        verify(orderProductMappingRepository).saveAll(orderDetails.products);
         verifyNoMoreInteractions(orderProductMappingRepository);
-
-        verifyNoMoreInteractions(orderRepository);
-        verifyNoInteractions(orderAddressRepository);
     }
 
 }

@@ -33,9 +33,6 @@ class OrderAdapterTest {
     @Captor
     private ArgumentCaptor<OrderDetailsDao> orderDetailsDaoCaptor;
 
-    @Captor
-    private ArgumentCaptor<List<OrderProductMappingDao>> orderProductMappingListCaptor;
-
     @InjectMocks
     private OrderAdapter adapter;
 
@@ -180,43 +177,6 @@ class OrderAdapterTest {
 
         // When
         Response result = adapter.save(username, dto);
-
-        // Then
-        assertThat(result).isEqualTo(Response.ERROR);
-        verifyNoMoreInteractions(service);
-    }
-
-    @Test
-    void saveOrderProducts() {
-        // Given
-        long orderId = aLong();
-        List<OrderProductDto> dtoList = List.of(aOrderProductDto(), aOrderProductDto());
-
-        // When
-        Response result = adapter.saveOrderProducts(orderId, dtoList);
-
-        // Then
-        assertThat(result).isEqualTo(Response.OK);
-
-        verify(service).saveOrderProductMappings(eq(orderId), orderProductMappingListCaptor.capture());
-
-        List<OrderProductMappingDao> daoList = orderProductMappingListCaptor.getValue();
-        assertThat(daoList).hasSize(2);
-        verifyOrderProducts(orderId, dtoList.get(0), daoList.get(0));
-        verifyOrderProducts(orderId, dtoList.get(1), daoList.get(1));
-        verifyNoMoreInteractions(service);
-    }
-
-    @Test
-    void saveOrderProducts_error() {
-        // Given
-        long orderId = aLong();
-        List<OrderProductDto> dtoList = List.of(aOrderProductDto(), aOrderProductDto());
-
-        doThrow(new NullPointerException()).when(service).saveOrderProductMappings(eq(orderId), any());
-
-        // When
-        Response result = adapter.saveOrderProducts(orderId, dtoList);
 
         // Then
         assertThat(result).isEqualTo(Response.ERROR);
