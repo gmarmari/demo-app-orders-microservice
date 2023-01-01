@@ -3,6 +3,8 @@ package gmarmari.demo.microservices.orders.adapters;
 import gmarmari.demo.microservices.orders.api.*;
 import gmarmari.demo.microservices.orders.entities.*;
 import gmarmari.demo.microservices.orders.services.OrderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class OrderAdapter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderAdapter.class);
 
     private final OrderService service;
 
@@ -37,6 +41,7 @@ public class OrderAdapter {
             service.delete(orderId);
             return Response.OK;
         } catch (Exception e) {
+            LOGGER.error("Error deleting order with id " + orderId, e);
             return Response.ERROR;
         }
     }
@@ -46,6 +51,7 @@ public class OrderAdapter {
             service.save(convert(orderDetails, username));
             return Response.OK;
         } catch (Exception e) {
+            LOGGER.error("Error saving order details ", e);
             return Response.ERROR;
         }
     }
