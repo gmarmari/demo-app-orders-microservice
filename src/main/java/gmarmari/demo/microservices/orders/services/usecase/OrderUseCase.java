@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -67,10 +68,20 @@ public class OrderUseCase implements OrderService {
         OrderDao savedOrder = orderRepository.save(orderDetails.order);
 
         orderAddressRepository.deleteByOrderId(savedOrder.getId());
-        orderDetails.addresses.forEach(orderAddressRepository::save);
+        orderAddressRepository.flush();
+        orderDetails.addresses.forEach(address -> {
+            address.setId(0);
+            address.setOrderId(savedOrder.getId());
+            orderAddressRepository.save(address);
+        });
 
         orderProductMappingRepository.deleteByOrderId(savedOrder.getId());
-        orderProductMappingRepository.saveAll(orderDetails.products);
+        orderProductMappingRepository.flush();
+        orderDetails.products.forEach(product -> {
+            product.setId(0);
+            product.setOrderId(savedOrder.getId());
+            orderProductMappingRepository.save(product);
+        });
     }
 
 }
