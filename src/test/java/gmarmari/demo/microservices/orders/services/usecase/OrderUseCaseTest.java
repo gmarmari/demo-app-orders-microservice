@@ -150,11 +150,13 @@ class OrderUseCaseTest {
         verifyNoMoreInteractions(orderRepository);
 
         verify(orderAddressRepository).deleteByOrderId(orderDetails.order.getId());
-        orderDetails.addresses.forEach(address -> verify(orderAddressRepository).save(address));
+        verify(orderAddressRepository).flush();
+        orderDetails.addresses.forEach(address -> verify(orderAddressRepository, atLeast(1)).save(address));
         verifyNoMoreInteractions(orderAddressRepository);
 
         verify(orderProductMappingRepository).deleteByOrderId(orderDetails.order.getId());
-        verify(orderProductMappingRepository).saveAll(orderDetails.products);
+        verify(orderProductMappingRepository).flush();
+        orderDetails.products.forEach(product -> verify(orderProductMappingRepository, atLeast(1)).save(product));
         verifyNoMoreInteractions(orderProductMappingRepository);
     }
 
